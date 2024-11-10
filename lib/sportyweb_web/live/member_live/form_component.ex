@@ -22,25 +22,22 @@ defmodule SportywebWeb.MemberLive.FormComponent do
           phx-submit="save"
         >
           <div class="hidden">
-            <input field={@form[:type].value} type="hidden" readonly />
+            <input field={@form[:state].value} type="hidden" readonly />
           </div>
 
           <.input_grids>
-            <%= if @step == 1 do %>
               <.input_grid>
                 <div class="col-span-12" id="step-1-type">
                   <!-- Don't remove the id of the div, otherwise LiveView doesn't remove the input in step 2. -->
                   <.input
-                    field={@form[:type]}
+                    field={@form[:state]}
                     type="select"
                     label="Art"
                     options={Member.get_valid_states()}
                   />
                 </div>
               </.input_grid>
-            <% end %>
 
-            <%= if @step == 2 do %>
               <.input_grid>
                 <div class="col-span-12 md:col-span-4">
                   <.input field={@form[:last_name]} type="text" label="Nachname" />
@@ -121,22 +118,10 @@ defmodule SportywebWeb.MemberLive.FormComponent do
                   </.inputs_for>
                 </div>
               </.input_grid>
-            <% end %>
           </.input_grids>
 
           <:actions>
             <div>
-              <%= if @step == 1 && @member_type != "" do %>
-                <.button
-                  id="next-button"
-                  type="button"
-                  phx-target={@myself}
-                  phx-click={JS.push("update_step", value: %{step: 2})}
-                >
-                  Weiter
-                </.button>
-              <% end %>
-
               <%= if @step == 2 do %>
                 <.button phx-disable-with="Speichern...">Speichern</.button>
               <% end %>
@@ -164,7 +149,7 @@ defmodule SportywebWeb.MemberLive.FormComponent do
 
     step =
       if !is_nil(member.id) ||
-           (get_field(changeset, :step) == 1 && get_field(changeset, :type) != "") do
+           (get_field(changeset, :step) == 1 && get_field(changeset, :state) != "") do
         2
       else
         1
@@ -174,7 +159,6 @@ defmodule SportywebWeb.MemberLive.FormComponent do
      socket
      |> assign(assigns)
      |> assign(:step, step)
-     |> assign(:member_type, member.type)
      |> assign_new(:form, fn ->
        to_form(changeset)
      end)}

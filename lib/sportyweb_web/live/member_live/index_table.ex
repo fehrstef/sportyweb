@@ -10,9 +10,10 @@ defmodule SportywebWeb.MemberLive.IndexTableComponent do
     <div>
       <.table id="members" rows={@members} row_click={&JS.navigate(~p"/members/#{&1}")}>
         <:col :let={member} label="Name">
-          <%= format_string_field(member.name) %>
+          <%= format_string_field(member.last_name) %>
+          <%= format_string_field(member.first_name) %>
         </:col>
-        <:col :let={member} label="Art">
+        <:col :let={member} label="Status">
           <%= get_key_for_value(Member.get_valid_states(), member.state) %>
         </:col>
 

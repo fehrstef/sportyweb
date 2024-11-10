@@ -48,21 +48,21 @@
         notes={@member.notes}
       />
     </:item>
-    <:item :if={Member.has_active_membership_contract?(@member)} title="Aktives Mitglied">
+    <:item :if={Enum.any?(Member.get_active_membership_contracts(@member))} title="Aktives Mitglied">
       <.icon name="hero-check-badge" class="inline-block w-[20px] text-green-800" />
     </:item>
   </.list>
 </.card>
 
 <.header level="2" class="mt-12">
-  Mitgliedschaftsverträge
+  Vereinsbeitrag
 </.header>
 
 <.card>
-  <%= if Enum.any?(@streams.contracts.inserts) do %>
+  <%= if Enum.any?(@streams.club_contracts.inserts) do %>
     <.table
       id="contracts"
-      rows={@streams.contracts}
+      rows={@streams.club_contracts}
       row_click={fn {_id, contract} -> JS.navigate(~p"/contracts/#{contract}") end}
     >
       <:col :let={{_id, contract}} label="Vertragsobjekt">
@@ -74,6 +74,13 @@
           <.icon name="hero-archive-box" class="ml-1 inline-block w-[20px] text-zinc-800" />
         <% end %>
       </:col>
+      <:col :let={{_id, contract}} label="Status">
+         <%= if Contract.is_in_use?(contract) do %>
+          Aktiv
+         <% else %>
+          Archiviert
+         <% end %>
+      </:col>
 
       <:action :let={{_id, contract}}>
         <.link navigate={~p"/contracts/#{contract}"}>Anzeigen</.link>
@@ -84,4 +91,43 @@
       Bisher wurde noch kein Mitgliedschaftsvertrag erstellt.
     </p>
   <% end %>
+</.card>
+
+<.header level="2" class="mt-12">
+Abteilungsbeiträge
+</.header>
+
+<.card>
+    <%= if Enum.any?(@streams.special_contracts.inserts) do %>
+    <.table
+    id="special_contracts"
+    rows={@streams.special_contracts}
+    row_click={fn {_id, contract} -> JS.navigate(~p"/contracts/#{contract}") end}
+    >
+    <:col :let={{_id, contract}} label="Vertragsobjekt">
+        <%= format_string_field(Contract.get_object(contract).name) %>
+    </:col>
+    <:col :let={{_id, contract}} label="Gebühr">
+        <%= format_string_field(contract.fee.name) %>
+        <%= if Fee.is_archived?(contract.fee) do %>
+        <.icon name="hero-archive-box" class="ml-1 inline-block w-[20px] text-zinc-800" />
+        <% end %>
+    </:col>
+    <:col :let={{_id, contract}} label="Status">
+        <%= if Contract.is_in_use?(contract) do %>
+        Aktiv
+        <% else %>
+        Archiviert
+        <% end %>
+    </:col>
+
+    <:action :let={{_id, contract}}>
+        <.link navigate={~p"/contracts/#{contract}"}>Anzeigen</.link>
+    </:action>
+    </.table>
+    <% else %>
+    <p>
+        Bisher wurde noch kein Abteilungs- oder Gruppenbeitrag hinterlegt
+    </p>
+    <% end %>
 </.card>

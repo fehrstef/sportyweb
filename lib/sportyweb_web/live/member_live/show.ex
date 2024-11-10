@@ -23,12 +23,15 @@ defmodule SportywebWeb.MemberLive.Show do
         :postal_addresses,
         contracts: [:clubs, :departments, :groups, fee: :internal_events]
       ])
+     club_contracts = Enum.filter(member.contracts, fn c -> Contract.is_club_contract(c) end)
+     special_contracts = Enum.filter(member.contracts, fn c -> !Contract.is_club_contract(c) end)
 
     {:noreply,
      socket
      |> assign(:page_title, "Kontakt: #{member.first_name} #{member.last_name}")
      |> assign(:member, member)
      |> assign(:club, member.club)
-     |> stream(:contracts, member.contracts)}
+     |> stream(:club_contracts, club_contracts)
+     |> stream(:special_contracts, special_contracts)}
   end
 end

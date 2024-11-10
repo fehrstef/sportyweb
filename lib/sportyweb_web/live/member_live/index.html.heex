@@ -26,10 +26,19 @@
 
       <:col :let={{_id, member}} label="Status">
           <%= get_key_for_value(Member.get_valid_states(), member.state ) %>
-          <%= if Member.has_active_membership_contract?(member) do %>
+          <%= if Enum.any?(Member.get_active_membership_contracts(member)) do %>
             <.icon name="hero-check-badge" class="ml-1 inline-block w-[20px] text-green-800" />
           <% end %>
       </:col>
+    <:col :let={{_id, member}} label="Vereinsbeitrag">
+        <%= print_club_fees(member) %>
+    </:col>
+    <:col :let={{_id, member}} label="Abteilungen">
+        <%= print_departments(member) %>
+    </:col>
+    <:col :let={{_id, member}} label="Gruppen">
+        <%= print_groups(member) %>
+    </:col>
 
       <:action :let={{_id, member}}>
         <.link navigate={~p"/members/#{member}"}>Anzeigen</.link>

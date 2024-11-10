@@ -73,11 +73,17 @@ defmodule Sportyweb.Membership.Member do
     end
   end
 
-  def has_active_membership_contract?(%Member{} = member) do
-    Enum.any?(member.contracts, fn contract ->
+  def get_active_membership_contracts(%Member{} = member) do
+    Enum.filter(member.contracts, fn contract ->
       Contract.is_in_use?(contract, Date.utc_today())
     end)
   end
+
+  def get_full_name(%Member{} = member) do
+    full_name = member.first_name <> " " <> member.last_name
+    full_name
+  end
+
 
   @doc false
   def changeset(member, attrs) do

@@ -71,6 +71,33 @@ defmodule Sportyweb.Legal.Contract do
     end
   end
 
+  def is_club_contract(%Contract{} = contract) do
+    if (is_department_contract(contract) || is_group_contract(contract)) do
+      false
+    else
+      true
+    end
+  end
+
+  def is_department_contract(%Contract{} = contract) do
+    cond do
+      is_list(contract.departments) && Enum.any?(contract.departments) ->
+        true
+      true ->
+        false
+    end
+  end
+
+  def is_group_contract(%Contract{} = contract) do
+    cond do
+      is_list(contract.groups) && Enum.any?(contract.groups) ->
+        true
+      true ->
+        false
+    end
+  end
+
+
   @doc false
   def changeset(contract, attrs) do
     contract

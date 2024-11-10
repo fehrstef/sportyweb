@@ -9,7 +9,7 @@
     </:item>
     <:item title="Kontakt">
       <.link navigate={~p"/members/#{@contract.member}"} class="text-indigo-600 hover:underline">
-        <%= format_string_field(@contract.member.name) %>
+        <%= format_string_field(Sportyweb.Membership.Member.get_full_name(@contract.member)) %>
       </.link>
     </:item>
     <:item title="Gebühr">

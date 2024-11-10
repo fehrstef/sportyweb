@@ -32,7 +32,7 @@ defmodule SportywebWeb.ContractLive.FormComponent do
                   field={@form[:member_id]}
                   type="select"
                   label="Kontakt"
-                  options={@member_options |> Enum.map(&{&1.name, &1.id})}
+                  options={@member_options |> Enum.map(&{Sportyweb.Membership.Member.get_full_name(&1), &1.id})}
                   prompt="Bitte auswählen"
                   phx-change="update_fee_options"
                 />
