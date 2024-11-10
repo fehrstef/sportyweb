@@ -4,7 +4,7 @@ defmodule SportywebWeb.ForecastLive.FormComponent do
 
   alias Sportyweb.Finance
   alias Sportyweb.Finance.Forecast
-  alias Sportyweb.Personal
+  alias Sportyweb.Membership
 
   @impl true
   def render(assigns) do
@@ -35,13 +35,13 @@ defmodule SportywebWeb.ForecastLive.FormComponent do
                 />
               </div>
 
-              <%= if @type == "contact" do %>
+              <%= if @type == "member" do %>
                 <div class="col-span-12">
                   <.input
-                    field={@form[:contact_id]}
+                    field={@form[:member_id]}
                     type="select"
                     label="Kontakt"
-                    options={@contact_options |> Enum.map(&{&1.name, &1.id})}
+                    options={@member_options |> Enum.map(&{&1.name, &1.id})}
                     prompt="Alle Kontakte"
                   />
                 </div>
@@ -86,7 +86,7 @@ defmodule SportywebWeb.ForecastLive.FormComponent do
      socket
      |> assign(assigns)
      |> assign(:type, forecast.type)
-     |> assign(:contact_options, Personal.list_contacts(assigns.club.id))
+     |> assign(:member_options, Membership.list_members(assigns.club.id))
      |> assign(:subsidy_options, Finance.list_subsidies(assigns.club.id))
      |> assign_new(:form, fn ->
        to_form(change(forecast))
@@ -124,19 +124,19 @@ defmodule SportywebWeb.ForecastLive.FormComponent do
   defp get_navigate(socket, %Ecto.Changeset{} = changeset) do
     club_id = socket.assigns.club.id
     type = get_field(changeset, :type)
-    contact_id = get_field(changeset, :contact_id)
+    member_id = get_field(changeset, :member_id)
     subsidy_id = get_field(changeset, :subsidy_id)
     start_date = Date.to_string(get_field(changeset, :start_date))
     end_date = Date.to_string(get_field(changeset, :end_date))
 
     case type do
-      "contact" ->
-        case contact_id do
+      "member" ->
+        case member_id do
           nil ->
-            ~p"/clubs/#{club_id}/forecasts/start/#{start_date}/end/#{end_date}/contact"
+            ~p"/clubs/#{club_id}/forecasts/start/#{start_date}/end/#{end_date}/member"
 
           _ ->
-            ~p"/clubs/#{club_id}/forecasts/start/#{start_date}/end/#{end_date}/contact/#{contact_id}"
+            ~p"/clubs/#{club_id}/forecasts/start/#{start_date}/end/#{end_date}/member/#{member_id}"
         end
 
       "subsidy" ->

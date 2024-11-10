@@ -13,7 +13,7 @@ defmodule SportywebWeb.DepartmentLive.Show do
     department =
       Organization.get_department!(id, [
         :club,
-        :contacts,
+        :members,
         :emails,
         :groups,
         :notes,

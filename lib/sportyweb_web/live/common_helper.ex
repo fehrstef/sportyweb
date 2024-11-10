@@ -79,10 +79,10 @@ defmodule SportywebWeb.CommonHelper do
 
   ## Examples
 
-      iex> get_key_for_value(Contact.get_valid_genders, "female")
+      iex> get_key_for_value(Member.get_valid_genders, "female")
       "Weiblich"
 
-      iex> format_struct_list(Contact.get_valid_genders, "kangaroo")
+      iex> format_struct_list(Member.get_valid_genders, "kangaroo")
       "-"
 
   """

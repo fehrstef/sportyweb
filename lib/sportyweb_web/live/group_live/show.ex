@@ -12,7 +12,7 @@ defmodule SportywebWeb.GroupLive.Show do
   def handle_params(%{"id" => id}, _, socket) do
     group =
       Organization.get_group!(id, [
-        :contacts,
+        :members,
         :emails,
         :notes,
         :phones,

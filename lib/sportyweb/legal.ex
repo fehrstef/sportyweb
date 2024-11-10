@@ -8,14 +8,14 @@ defmodule Sportyweb.Legal do
 
   alias Sportyweb.Legal
   alias Sportyweb.Legal.Contract
-  alias Sportyweb.Personal.Contact
+  alias Sportyweb.Membership.Member
 
   @doc """
   Returns a list of all contracts. Preloads associations.
 
   ## Examples
 
-      iex> list_contracts([:contact])
+      iex> list_contracts([:member])
       [%Contract{}, ...]
 
   """
@@ -125,27 +125,27 @@ defmodule Sportyweb.Legal do
   end
 
   @doc """
-  Updates the referenced fee of all contracts where the age of the contact
+  Updates the referenced fee of all contracts where the age of the member
   exceedes the upper age limit ("maximum_age_in_years") of the current fee.
   The new fee will be the currents fee successor, if one was set.
 
   ## Examples
 
-      iex> update_contract_fees_for_aged_contacts()
+      iex> update_contract_fees_for_aged_members()
       {:ok, nil}
 
   """
-  def update_contract_fees_for_aged_contacts do
+  def update_contract_fees_for_aged_members do
     query =
       from(
         c in Contract,
-        join: contact in assoc(c, :contact),
+        join: member in assoc(c, :member),
         join: fee in assoc(c, :fee),
         where: c.archive_date < ^Date.utc_today(),
-        where: not is_nil(contact.person_birthday),
+        where: not is_nil(member.birthday),
         where: not is_nil(fee.maximum_age_in_years),
         where: not is_nil(fee.successor_id),
-        preload: [:contact, fee: fee]
+        preload: [:member, fee: fee]
       )
 
     contracts = Repo.all(query)
@@ -153,9 +153,9 @@ defmodule Sportyweb.Legal do
     contracts
     |> Enum.each(fn contract ->
       fee = contract.fee
-      contact_age = Contact.age_in_years(contract.contact)
+      member_age = Member.age_in_years(contract.member)
 
-      if fee.successor_id && contact_age > fee.maximum_age_in_years do
+      if fee.successor_id && member_age > fee.maximum_age_in_years do
         Legal.update_contract(contract, %{fee_id: fee.successor_id})
       end
     end)

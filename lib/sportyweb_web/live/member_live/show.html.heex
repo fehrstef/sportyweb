@@ -1,7 +1,7 @@
 <.header>
   <%= @page_title %>
   <:actions>
-    <.link navigate={~p"/contacts/#{@contact}/edit"}>
+    <.link navigate={~p"/members/#{@member}/edit"}>
       <.button>Kontakt bearbeiten</.button>
     </.link>
   </:actions>
@@ -9,49 +9,46 @@
 
 <.card>
   <.list>
-    <:item title="Art">
-      <%= get_key_for_value(Contact.get_valid_types(), @contact.type) %>
+    <:item title="Status">
+      <%= get_key_for_value(Member.get_valid_states(), @member.state) %>
     </:item>
     <:item title="Name">
-      <%= format_string_field(@contact.name) %>
+      <%= format_string_field(@member.last_name) %>
     </:item>
-    <:item :if={Contact.is_organization?(@contact)} title="Organisationstyp">
-      <%= get_key_for_value(Contact.get_valid_organization_types(), @contact.organization_type) %>
+    <:item title="Geschlecht">
+      <%= get_key_for_value(Member.get_valid_genders(), @member.gender) %>
     </:item>
-    <:item :if={Contact.is_person?(@contact)} title="Geschlecht">
-      <%= get_key_for_value(Contact.get_valid_genders(), @contact.person_gender) %>
-    </:item>
-    <:item :if={Contact.is_person?(@contact)} title="Geburtsdatum">
-      <%= format_date_field_dmy(@contact.person_birthday) %> - <%= Contact.age_in_years(@contact) %> Jahre
+    <:item title="Geburtsdatum">
+      <%= format_date_field_dmy(@member.birthday) %> - <%= Member.age_in_years(@member) %> Jahre
     </:item>
     <:item title="Adresse">
       <.live_component
         module={SportywebWeb.PolymorphicLive.PostalAddressShowComponent}
         id="postal_addresses"
-        postal_addresses={@contact.postal_addresses}
+        postal_addresses={@member.postal_addresses}
       />
     </:item>
     <:item title="E-Mail">
-      <%= format_struct_list(@contact.emails, :address) %>
+      <%= format_struct_list(@member.emails, :address) %>
     </:item>
     <:item title="Telefon">
-      <%= format_struct_list(@contact.phones, :number) %>
+      <%= format_struct_list(@member.phones, :number) %>
     </:item>
     <:item title="Zahlungsdaten">
       <.live_component
         module={SportywebWeb.PolymorphicLive.FinancialDataShowComponent}
         id="financial_data"
-        financial_data={@contact.financial_data}
+        financial_data={@member.financial_data}
       />
     </:item>
     <:item title="Notizen">
       <.live_component
         module={SportywebWeb.PolymorphicLive.NotesShowComponent}
         id="notes"
-        notes={@contact.notes}
+        notes={@member.notes}
       />
     </:item>
-    <:item :if={Contact.has_active_membership_contract?(@contact)} title="Aktives Mitglied">
+    <:item :if={Member.has_active_membership_contract?(@member)} title="Aktives Mitglied">
       <.icon name="hero-check-badge" class="inline-block w-[20px] text-green-800" />
     </:item>
   </.list>

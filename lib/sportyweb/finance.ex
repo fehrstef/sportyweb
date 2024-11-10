@@ -10,8 +10,8 @@ defmodule Sportyweb.Finance do
   alias Sportyweb.Organization.Club
   alias Sportyweb.Organization.Department
   alias Sportyweb.Organization.Group
-  alias Sportyweb.Personal
-  alias Sportyweb.Personal.Contact
+  alias Sportyweb.Membership
+  alias Sportyweb.Membership.Member
 
   @doc """
   Returns a clubs list of general fees based on the given type.
@@ -93,7 +93,7 @@ defmodule Sportyweb.Finance do
   end
 
   @doc """
-  Returns a list of fees that are possible options for the given contact.
+  Returns a list of fees that are possible options for the given member.
   The selection is based on a set of different criteria.
 
   ## Examples
@@ -105,11 +105,11 @@ defmodule Sportyweb.Finance do
       []
 
   """
-  def list_contract_fee_options(contract_object, contact_id) do
-    if is_nil(contact_id) || (is_binary(contact_id) && String.trim(contact_id) == "") do
+  def list_contract_fee_options(contract_object, member_id) do
+    if is_nil(member_id) || (is_binary(member_id) && String.trim(member_id) == "") do
       []
     else
-      contact = Personal.get_contact!(contact_id)
+      member = Membership.get_member!(member_id)
       # The following code determines which type of entity the contract_object is.
       # Based on that, it returns the corresponding fee type, which will be used
       # to only select matching fees.
@@ -128,7 +128,7 @@ defmodule Sportyweb.Finance do
         from(
           f in Fee,
           join: internal_events in assoc(f, :internal_events),
-          where: f.club_id == ^contact.club_id,
+          where: f.club_id == ^member.club_id,
           where: f.type == ^fee_type,
           where: f.is_general == true or f.id in ^specific_fee_ids,
           where:
@@ -138,20 +138,14 @@ defmodule Sportyweb.Finance do
         )
 
       # The age restriction only plays a role for persons
-      query =
-        if Contact.is_person?(contact) do
-          contact_age_in_years = Contact.age_in_years(contact)
-
-          from(
+      member_age_in_years = Member.age_in_years(member)
+      query = from(
             f in query,
             where:
-              is_nil(f.minimum_age_in_years) or f.minimum_age_in_years <= ^contact_age_in_years,
+              is_nil(f.minimum_age_in_years) or f.minimum_age_in_years <= ^member_age_in_years,
             where:
-              is_nil(f.maximum_age_in_years) or f.maximum_age_in_years >= ^contact_age_in_years
+              is_nil(f.maximum_age_in_years) or f.maximum_age_in_years >= ^member_age_in_years
           )
-        else
-          query
-        end
 
       Repo.all(query)
     end

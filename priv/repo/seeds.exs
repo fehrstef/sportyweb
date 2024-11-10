@@ -26,8 +26,8 @@ alias Sportyweb.Organization
 alias Sportyweb.Organization.Club
 alias Sportyweb.Organization.Department
 alias Sportyweb.Organization.Group
-alias Sportyweb.Personal
-alias Sportyweb.Personal.Contact
+alias Sportyweb.Membership
+alias Sportyweb.Membership.Member
 alias Sportyweb.Polymorphic.Email
 alias Sportyweb.Polymorphic.FinancialData
 alias Sportyweb.Polymorphic.InternalEvent
@@ -577,7 +577,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
         description: "",
         amount: Money.new(:EUR, Enum.random(40..60)),
         amount_one_time: Money.new(:EUR, 0),
-        is_for_contact_group_contacts_only: false,
+        is_for_member_group_members_only: false,
         minimum_age_in_years: 66,
         maximum_age_in_years: nil,
         internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -595,7 +595,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
         description: "",
         amount: Money.new(:EUR, Enum.random(60..200)),
         amount_one_time: Money.new(:EUR, 0),
-        is_for_contact_group_contacts_only: false,
+        is_for_member_group_members_only: false,
         minimum_age_in_years: 18,
         maximum_age_in_years: 65,
         internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -613,7 +613,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
       description: "",
       amount: Money.new(:EUR, Enum.random(30..50)),
       amount_one_time: Money.new(:EUR, 0),
-      is_for_contact_group_contacts_only: false,
+      is_for_member_group_members_only: false,
       minimum_age_in_years: 18,
       maximum_age_in_years: 65,
       internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -631,7 +631,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
         description: "",
         amount: Money.new(:EUR, Enum.random(30..40)),
         amount_one_time: Money.new(:EUR, 0),
-        is_for_contact_group_contacts_only: false,
+        is_for_member_group_members_only: false,
         minimum_age_in_years: 13,
         maximum_age_in_years: 17,
         internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -648,7 +648,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
       description: "",
       amount: Money.new(:EUR, Enum.random(10..25)),
       amount_one_time: Money.new(:EUR, 0),
-      is_for_contact_group_contacts_only: false,
+      is_for_member_group_members_only: false,
       minimum_age_in_years: 0,
       maximum_age_in_years: 12,
       internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -667,7 +667,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
         description: "",
         amount: Money.new(:EUR, Enum.random(15..25)),
         amount_one_time: Money.new(:EUR, 0),
-        is_for_contact_group_contacts_only: false,
+        is_for_member_group_members_only: false,
         minimum_age_in_years: 18,
         maximum_age_in_years: nil,
         internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -684,7 +684,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
       description: "",
       amount: Money.new(:EUR, Enum.random(5..15)),
       amount_one_time: Money.new(:EUR, 0),
-      is_for_contact_group_contacts_only: false,
+      is_for_member_group_members_only: false,
       minimum_age_in_years: 0,
       maximum_age_in_years: 17,
       internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -703,7 +703,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
         description: "",
         amount: Money.new(:EUR, Enum.random(15..25)),
         amount_one_time: Money.new(:EUR, 0),
-        is_for_contact_group_contacts_only: false,
+        is_for_member_group_members_only: false,
         minimum_age_in_years: 18,
         maximum_age_in_years: nil,
         internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -720,7 +720,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
       description: "",
       amount: Money.new(:EUR, Enum.random(5..15)),
       amount_one_time: Money.new(:EUR, 0),
-      is_for_contact_group_contacts_only: false,
+      is_for_member_group_members_only: false,
       minimum_age_in_years: 0,
       maximum_age_in_years: 17,
       internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -739,7 +739,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
         description: "",
         amount: Money.new(:EUR, Enum.random(25..40)),
         amount_one_time: Money.new(:EUR, 0),
-        is_for_contact_group_contacts_only: false,
+        is_for_member_group_members_only: false,
         minimum_age_in_years: 18,
         maximum_age_in_years: 65,
         internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -756,7 +756,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
       description: "",
       amount: Money.new(:EUR, Enum.random(20..25)),
       amount_one_time: Money.new(:EUR, 0),
-      is_for_contact_group_contacts_only: false,
+      is_for_member_group_members_only: false,
       minimum_age_in_years: 0,
       maximum_age_in_years: 12,
       internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -774,7 +774,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
       description: "",
       amount: Money.new(:EUR, 3),
       amount_one_time: Money.new(:EUR, 0),
-      is_for_contact_group_contacts_only: false,
+      is_for_member_group_members_only: false,
       minimum_age_in_years: nil,
       maximum_age_in_years: nil,
       internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -790,7 +790,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
       description: "",
       amount: Money.new(:EUR, 2),
       amount_one_time: Money.new(:EUR, 0),
-      is_for_contact_group_contacts_only: false,
+      is_for_member_group_members_only: false,
       minimum_age_in_years: 0,
       maximum_age_in_years: 17,
       internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -812,7 +812,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
           description: "",
           amount: Money.new(:EUR, Enum.random(5..25)),
           amount_one_time: Money.new(:EUR, 0),
-          is_for_contact_group_contacts_only: false,
+          is_for_member_group_members_only: false,
           minimum_age_in_years: 18,
           maximum_age_in_years: nil,
           internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -830,7 +830,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
         description: "",
         amount: Money.new(:EUR, Enum.random(5..10)),
         amount_one_time: Money.new(:EUR, 0),
-        is_for_contact_group_contacts_only: false,
+        is_for_member_group_members_only: false,
         minimum_age_in_years: 0,
         maximum_age_in_years: 17,
         internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -853,7 +853,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
             description: "",
             amount: Money.new(:EUR, Enum.random(15..25)),
             amount_one_time: Money.new(:EUR, 0),
-            is_for_contact_group_contacts_only: false,
+            is_for_member_group_members_only: false,
             minimum_age_in_years: 18,
             maximum_age_in_years: nil,
             internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -871,7 +871,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
           description: "",
           amount: Money.new(:EUR, Enum.random(5..15)),
           amount_one_time: Money.new(:EUR, 0),
-          is_for_contact_group_contacts_only: false,
+          is_for_member_group_members_only: false,
           minimum_age_in_years: 0,
           maximum_age_in_years: 17,
           internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -881,29 +881,24 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
       end)
     end)
 
-    # Contacts & Contracts
+    # Members & Contracts
 
     for _i <- 0..Enum.random(20..50) do
       # Use the context function instead of Repo.insert!() to invoke the changeset which sets the name.
-      {:ok, %Contact{} = contact} =
-        Personal.create_contact(%{
+      {:ok, %Member{} = member} =
+        Membership.create_member(%{
           club_id: club.id,
-          type: if(:rand.uniform() < 0.8, do: "person", else: "organization"),
-          organization_name:
-            "#{Faker.Company.buzzword_prefix()} #{Faker.Industry.sub_sector()} #{Faker.Company.buzzword_prefix()}",
-          organization_type:
-            Contact.get_valid_organization_types()
-            |> Enum.map(fn organization_type -> organization_type[:value] end)
+          last_name: Faker.Person.last_name(),
+          first_name: Faker.Person.first_name(),
+          state:
+            Member.get_valid_states()
+            |> Enum.map(fn state -> state[:value] end)
             |> Enum.random(),
-          person_last_name: Faker.Person.last_name(),
-          person_first_name_1: Faker.Person.first_name(),
-          person_first_name_2:
-            if(:rand.uniform() < 0.80, do: "", else: Faker.Person.first_name()),
-          person_gender:
-            Contact.get_valid_genders()
+          gender:
+            Member.get_valid_genders()
             |> Enum.map(fn gender -> gender[:value] end)
             |> Enum.random(),
-          person_birthday: Faker.Date.date_of_birth(6..99),
+          birthday: Faker.Date.date_of_birth(6..99),
           postal_addresses: [Map.from_struct(Sportyweb.SeedHelper.get_random_postal_address())],
           emails: [Map.from_struct(Sportyweb.SeedHelper.get_random_email())],
           phones: [Map.from_struct(Sportyweb.SeedHelper.get_random_phone())],
@@ -911,60 +906,58 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
           notes: [Map.from_struct(Sportyweb.SeedHelper.get_random_note())]
         })
 
-      if contact.type == "person" do
-        if :rand.uniform() < 0.5 do
-          # Select a random fee that works with this combination of club & contact
-          fee = Finance.list_contract_fee_options(club, contact.id) |> Enum.random()
+      if :rand.uniform() < 0.5 do
+        # Select a random fee that works with this combination of club & member
+        fee = Finance.list_contract_fee_options(club, member.id) |> Enum.random()
+
+        Repo.insert!(%Contract{
+          club_id: club.id,
+          member_id: member.id,
+          fee_id: fee.id,
+          signing_date: ~D[2021-11-28],
+          start_date: ~D[2022-01-01],
+          termination_date: nil,
+          archive_date: nil,
+          clubs: [club]
+        })
+      end
+
+      if Enum.any?(club.departments) do
+        department = club.departments |> Enum.random()
+
+        if :rand.uniform() < 0.3 do
+          # Select a random fee that works with this combination of club & department
+          fee = Finance.list_contract_fee_options(department, member.id) |> Enum.random()
 
           Repo.insert!(%Contract{
             club_id: club.id,
-            contact_id: contact.id,
+            member_id: member.id,
             fee_id: fee.id,
             signing_date: ~D[2021-11-28],
             start_date: ~D[2022-01-01],
             termination_date: nil,
             archive_date: nil,
-            clubs: [club]
+            departments: [department]
           })
         end
 
-        if Enum.any?(club.departments) do
-          department = club.departments |> Enum.random()
+        if Enum.any?(department.groups) do
+          group = department.groups |> Enum.random()
 
           if :rand.uniform() < 0.3 do
-            # Select a random fee that works with this combination of club & department
-            fee = Finance.list_contract_fee_options(department, contact.id) |> Enum.random()
+            # Select a random fee that works with this combination of club & group
+            fee = Finance.list_contract_fee_options(group, member.id) |> Enum.random()
 
             Repo.insert!(%Contract{
               club_id: club.id,
-              contact_id: contact.id,
+              member_id: member.id,
               fee_id: fee.id,
               signing_date: ~D[2021-11-28],
               start_date: ~D[2022-01-01],
               termination_date: nil,
               archive_date: nil,
-              departments: [department]
+              groups: [group]
             })
-          end
-
-          if Enum.any?(department.groups) do
-            group = department.groups |> Enum.random()
-
-            if :rand.uniform() < 0.3 do
-              # Select a random fee that works with this combination of club & group
-              fee = Finance.list_contract_fee_options(group, contact.id) |> Enum.random()
-
-              Repo.insert!(%Contract{
-                club_id: club.id,
-                contact_id: contact.id,
-                fee_id: fee.id,
-                signing_date: ~D[2021-11-28],
-                start_date: ~D[2022-01-01],
-                termination_date: nil,
-                archive_date: nil,
-                groups: [group]
-              })
-            end
           end
         end
       end
@@ -998,7 +991,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
         description: "",
         amount: Money.new(:EUR, Enum.random(10..150)),
         amount_one_time: Money.new(:EUR, 0),
-        is_for_contact_group_contacts_only: false,
+        is_for_member_group_members_only: false,
         minimum_age_in_years: nil,
         maximum_age_in_years: nil,
         internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -1039,7 +1032,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
           description: "",
           amount: Money.new(:EUR, Enum.random(10..150)),
           amount_one_time: Money.new(:EUR, 0),
-          is_for_contact_group_contacts_only: false,
+          is_for_member_group_members_only: false,
           minimum_age_in_years: nil,
           maximum_age_in_years: nil,
           internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],
@@ -1088,7 +1081,7 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
         description: "",
         amount: Money.new(:EUR, Enum.random(10..150)),
         amount_one_time: Money.new(:EUR, 0),
-        is_for_contact_group_contacts_only: false,
+        is_for_member_group_members_only: false,
         minimum_age_in_years: nil,
         maximum_age_in_years: nil,
         internal_events: [Sportyweb.SeedHelper.get_random_internal_event()],

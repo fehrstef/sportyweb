@@ -88,7 +88,7 @@ defmodule SportywebWeb.FeeLive.FormComponent do
             <.input_grid class="pt-6">
               <div class="col-span-12">
                 <.input
-                  field={@form[:is_for_contact_group_contacts_only]}
+                  field={@form[:is_for_member_group_members_only]}
                   type="checkbox"
                   label="Soll diese Gebühr nur für Mitglieder einer Kontaktgruppe (z.B. Familie, Ehepartner, Alleinerziehende mit Kindern, etc.) zur Verfügung stehen?"
                 />

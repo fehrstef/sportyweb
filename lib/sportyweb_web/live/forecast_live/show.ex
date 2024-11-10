@@ -5,7 +5,7 @@ defmodule SportywebWeb.ForecastLive.Show do
   alias Sportyweb.Finance
   alias Sportyweb.Legal
   alias Sportyweb.Organization
-  alias Sportyweb.Personal
+  alias Sportyweb.Membership
 
   @impl true
   def mount(_params, _session, socket) do
@@ -34,7 +34,7 @@ defmodule SportywebWeb.ForecastLive.Show do
      |> apply_action(socket.assigns.live_action, params)}
   end
 
-  defp apply_action(socket, :show_contacts_all, _params) do
+  defp apply_action(socket, :show_members_all, _params) do
     {transactions, transactions_amount_sum} =
       Accounting.forecast_transactions(
         :fee,
@@ -49,22 +49,22 @@ defmodule SportywebWeb.ForecastLive.Show do
     |> stream(:transactions, transactions)
   end
 
-  defp apply_action(socket, :show_contacts_single, %{"contact_id" => contact_id}) do
-    contact =
-      Personal.get_contact!(contact_id,
-        contracts: [:contact, fee: [:internal_events, subsidy: :internal_events]]
+  defp apply_action(socket, :show_members_single, %{"member_id" => member_id}) do
+    member =
+      Membership.get_member!(member_id,
+        contracts: [:member, fee: [:internal_events, subsidy: :internal_events]]
       )
 
     {transactions, transactions_amount_sum} =
       Accounting.forecast_transactions(
         :fee,
-        contact.contracts,
+        member.contracts,
         socket.assigns.start_date,
         socket.assigns.end_date
       )
 
     socket
-    |> assign(:page_title, "Prognose Kontakt: #{contact.name}")
+    |> assign(:page_title, "Prognose Kontakt: #{member.name}")
     |> assign(:transactions_amount_sum, transactions_amount_sum)
     |> stream(:transactions, transactions)
   end
@@ -89,7 +89,7 @@ defmodule SportywebWeb.ForecastLive.Show do
     # And because there are no subsequent database calls it is actually pretty fast.
     subsidy =
       Finance.get_subsidy!(subsidy_id,
-        fees: [contracts: [:contact, fee: [:internal_events, subsidy: :internal_events]]]
+        fees: [contracts: [:member, fee: [:internal_events, subsidy: :internal_events]]]
       )
 
     contracts =
@@ -113,7 +113,7 @@ defmodule SportywebWeb.ForecastLive.Show do
 
   defp all_contracts(socket) do
     Legal.list_contracts(socket.assigns.club.id, [
-      :contact,
+      :member,
       fee: [:internal_events, subsidy: :internal_events]
     ])
   end

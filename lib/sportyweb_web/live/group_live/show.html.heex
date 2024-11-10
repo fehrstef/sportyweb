@@ -68,11 +68,11 @@
 </.header>
 
 <.card>
-  <%= if Enum.any?(@group.contacts) do %>
+  <%= if Enum.any?(@group.members) do %>
     <.live_component
-      module={SportywebWeb.ContactLive.IndexTableComponent}
-      id="contacts-table"
-      contacts={@group.contacts}
+      module={SportywebWeb.MemberLive.IndexTableComponent}
+      id="members-table"
+      members={@group.members}
     />
   <% else %>
     <p>

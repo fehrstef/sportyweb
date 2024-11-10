@@ -8,7 +8,7 @@ defmodule Sportyweb.Accounts.UserNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"Sportyweb", "contact@example.com"})
+      |> from({"Sportyweb", "member@example.com"})
       |> subject(subject)
       |> text_body(body)
 

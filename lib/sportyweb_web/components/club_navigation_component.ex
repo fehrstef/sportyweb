@@ -55,14 +55,14 @@ defmodule SportywebWeb.ClubNavigationComponent do
         </.link>
 
         <.link
-          navigate={~p"/clubs/#{@club}/contacts"}
+          navigate={~p"/clubs/#{@club}/members"}
           class={[
             @classes_menu_item,
-            if(@club_navigation_current_item == :contacts, do: @classes_menu_item_active)
+            if(@club_navigation_current_item == :members, do: @classes_menu_item_active)
           ]}
         >
           <.icon name="hero-user-group" class={@classes_icon} />
-          <span class="truncate">Kontakte & Mitglieder</span>
+          <span class="truncate">Mitglieder</span>
         </.link>
 
         <.link

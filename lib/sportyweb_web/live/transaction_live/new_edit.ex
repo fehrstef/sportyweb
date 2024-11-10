@@ -34,7 +34,7 @@ defmodule SportywebWeb.TransactionLive.NewEdit do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
-    transaction = Accounting.get_transaction!(id, contract: [:club, :contact])
+    transaction = Accounting.get_transaction!(id, contract: [:club, :member])
 
     socket
     |> assign(:page_title, "Transaktion bearbeiten")

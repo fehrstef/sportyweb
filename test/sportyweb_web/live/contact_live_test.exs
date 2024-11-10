@@ -10,11 +10,11 @@ defmodule SportywebWeb.ContactLiveTest do
   import Sportyweb.RBAC.UserRoleFixtures
 
   @create_attrs %{
-    person_birthday: ~D[2022-11-05],
-    person_first_name_1: "some person_first_name_1",
-    person_first_name_2: "some person_first_name_2",
-    person_gender: "male",
-    person_last_name: "some person_last_name",
+    birthday: ~D[2022-11-05],
+    first_name_1: "some first_name_1",
+    first_name_2: "some first_name_2",
+    gender: "male",
+    last_name: "some last_name",
     financial_data: %{
       "0" => financial_data_attrs()
     },
@@ -23,18 +23,18 @@ defmodule SportywebWeb.ContactLiveTest do
     }
   }
   @update_attrs %{
-    person_birthday: ~D[2022-11-06],
-    person_first_name_1: "some updated person_first_name_1",
-    person_first_name_2: nil,
-    person_gender: "female",
-    person_last_name: "some updated person_last_name"
+    birthday: ~D[2022-11-06],
+    first_name_1: "some updated first_name_1",
+    first_name_2: nil,
+    gender: "female",
+    last_name: "some updated last_name"
   }
   @invalid_attrs %{
-    person_birthday: nil,
-    person_first_name_1: nil,
-    person_first_name_2: nil,
-    person_gender: nil,
-    person_last_name: nil
+    birthday: nil,
+    first_name_1: nil,
+    first_name_2: nil,
+    gender: nil,
+    last_name: nil
   }
 
   setup do
@@ -107,7 +107,7 @@ defmodule SportywebWeb.ContactLiveTest do
         |> follow_redirect(conn, ~p"/clubs/#{club}/contacts")
 
       assert html =~ "Kontakt erfolgreich erstellt"
-      assert html =~ "some person_last_name, some person_first_name_1 some person_first_name_2"
+      assert html =~ "some last_name, some first_name_1 some first_name_2"
     end
 
     test "cancels save new contact", %{conn: conn, user: user} do
@@ -142,7 +142,7 @@ defmodule SportywebWeb.ContactLiveTest do
         |> follow_redirect(conn, ~p"/contacts/#{contact}")
 
       assert html =~ "Kontakt erfolgreich aktualisiert"
-      assert html =~ "some updated person_last_name"
+      assert html =~ "some updated last_name"
     end
 
     test "cancels updates contact", %{conn: conn, user: user, contact: contact} do
@@ -161,7 +161,7 @@ defmodule SportywebWeb.ContactLiveTest do
 
       conn = conn |> log_in_user(user)
       {:ok, edit_live, html} = live(conn, ~p"/contacts/#{contact}/edit")
-      assert html =~ "some person_last_name"
+      assert html =~ "some last_name"
 
       {:ok, _, html} =
         edit_live
@@ -171,7 +171,7 @@ defmodule SportywebWeb.ContactLiveTest do
 
       assert html =~ "Kontakt erfolgreich gelöscht"
       assert html =~ "Kontakte"
-      refute html =~ "some person_last_name"
+      refute html =~ "some last_name"
     end
   end
 

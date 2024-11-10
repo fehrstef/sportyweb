@@ -1,20 +1,20 @@
-defmodule SportywebWeb.ContactLive.Show do
+defmodule SportywebWeb.MemberLive.Show do
   use SportywebWeb, :live_view
 
   alias Sportyweb.Finance.Fee
   alias Sportyweb.Legal.Contract
-  alias Sportyweb.Personal
-  alias Sportyweb.Personal.Contact
+  alias Sportyweb.Membership
+  alias Sportyweb.Membership.Member
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :club_navigation_current_item, :contacts)}
+    {:ok, assign(socket, :club_navigation_current_item, :members)}
   end
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    contact =
-      Personal.get_contact!(id, [
+    member =
+      Membership.get_member!(id, [
         :club,
         :emails,
         :financial_data,
@@ -26,9 +26,9 @@ defmodule SportywebWeb.ContactLive.Show do
 
     {:noreply,
      socket
-     |> assign(:page_title, "Kontakt: #{contact.name}")
-     |> assign(:contact, contact)
-     |> assign(:club, contact.club)
-     |> stream(:contracts, contact.contracts)}
+     |> assign(:page_title, "Kontakt: #{member.first_name} #{member.last_name}")
+     |> assign(:member, member)
+     |> assign(:club, member.club)
+     |> stream(:contracts, member.contracts)}
   end
 end

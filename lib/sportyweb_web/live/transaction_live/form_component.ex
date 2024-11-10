@@ -22,10 +22,10 @@ defmodule SportywebWeb.TransactionLive.FormComponent do
           </:item>
           <:item title="Kontakt">
             <.link
-              navigate={~p"/contacts/#{@transaction.contract.contact}"}
+              navigate={~p"/members/#{@transaction.contract.member}"}
               class="text-indigo-600 hover:underline"
             >
-              <%= format_string_field(@transaction.contract.contact.name) %>
+              <%= format_string_field(@transaction.contract.member.name) %>
             </.link>
           </:item>
         </.list>

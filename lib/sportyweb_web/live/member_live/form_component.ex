@@ -1,9 +1,9 @@
-defmodule SportywebWeb.ContactLive.FormComponent do
+defmodule SportywebWeb.MemberLive.FormComponent do
   use SportywebWeb, :live_component
   import Ecto.Changeset
 
-  alias Sportyweb.Personal
-  alias Sportyweb.Personal.Contact
+  alias Sportyweb.Membership
+  alias Sportyweb.Membership.Member
 
   @impl true
   def render(assigns) do
@@ -16,7 +16,7 @@ defmodule SportywebWeb.ContactLive.FormComponent do
       <.card>
         <.simple_form
           for={@form}
-          id="contact-form"
+          id="member-form"
           phx-target={@myself}
           phx-change="validate"
           phx-submit="save"
@@ -34,62 +34,46 @@ defmodule SportywebWeb.ContactLive.FormComponent do
                     field={@form[:type]}
                     type="select"
                     label="Art"
-                    options={Contact.get_valid_types()}
+                    options={Member.get_valid_states()}
                   />
                 </div>
               </.input_grid>
             <% end %>
 
             <%= if @step == 2 do %>
-              <%= if @contact_type == "organization" do %>
-                <.input_grid>
-                  <div class="col-span-12 md:col-span-6">
-                    <.input field={@form[:organization_name]} type="text" label="Organisationsname" />
-                  </div>
+              <.input_grid>
+                <div class="col-span-12 md:col-span-4">
+                  <.input field={@form[:last_name]} type="text" label="Nachname" />
+                </div>
 
-                  <div class="col-span-12 md:col-span-6">
-                    <.input
-                      field={@form[:organization_type]}
-                      type="select"
-                      label="Organisationstyp"
-                      options={Contact.get_valid_organization_types()}
-                      prompt="Bitte auswählen"
-                    />
-                  </div>
-                </.input_grid>
-              <% else %>
-                <.input_grid>
-                  <div class="col-span-12 md:col-span-4">
-                    <.input field={@form[:person_last_name]} type="text" label="Nachname" />
-                  </div>
+                <div class="col-span-12 md:col-span-4">
+                  <.input field={@form[:first_name]} type="text" label="Vorname" />
+                </div>
 
-                  <div class="col-span-12 md:col-span-4">
-                    <.input field={@form[:person_first_name_1]} type="text" label="Vorname" />
-                  </div>
+                <div class="col-span-12 md:col-span-6">
+                  <.input
+                    field={@form[:gender]}
+                    type="select"
+                    label="Geschlecht"
+                    options={Member.get_valid_genders()}
+                    prompt="Bitte auswählen"
+                  />
+                </div>
 
-                  <div class="col-span-12 md:col-span-4">
-                    <.input
-                      field={@form[:person_first_name_2]}
-                      type="text"
-                      label="2. Vorname (optional)"
-                    />
-                  </div>
+                <div class="col-span-12 md:col-span-6">
+                  <.input
+                    field={@form[:state]}
+                    type="select"
+                    label="Status"
+                    options={Member.get_valid_states()}
+                    prompt="Bitte auswählen"
+                  />
+                </div>
 
-                  <div class="col-span-12 md:col-span-6">
-                    <.input
-                      field={@form[:person_gender]}
-                      type="select"
-                      label="Geschlecht"
-                      options={Contact.get_valid_genders()}
-                      prompt="Bitte auswählen"
-                    />
-                  </div>
-
-                  <div class="col-span-12 md:col-span-6">
-                    <.input field={@form[:person_birthday]} type="date" label="Geburtsdatum" />
-                  </div>
-                </.input_grid>
-              <% end %>
+                <div class="col-span-12 md:col-span-6">
+                  <.input field={@form[:birthday]} type="date" label="Geburtsdatum" />
+                </div>
+              </.input_grid>
 
               <.input_grid class="pt-6">
                 <.inputs_for :let={postal_address} field={@form[:postal_addresses]}>
@@ -142,7 +126,7 @@ defmodule SportywebWeb.ContactLive.FormComponent do
 
           <:actions>
             <div>
-              <%= if @step == 1 && @contact_type != "" do %>
+              <%= if @step == 1 && @member_type != "" do %>
                 <.button
                   id="next-button"
                   type="button"
@@ -160,9 +144,9 @@ defmodule SportywebWeb.ContactLive.FormComponent do
               <.cancel_button navigate={@navigate}>Abbrechen</.cancel_button>
             </div>
             <.button
-              :if={@contact.id}
+              :if={@member.id}
               class="bg-rose-700 hover:bg-rose-800"
-              phx-click={JS.push("delete", value: %{id: @contact.id})}
+              phx-click={JS.push("delete", value: %{id: @member.id})}
               data-confirm="Unwiderruflich löschen?"
             >
               Löschen
@@ -175,11 +159,11 @@ defmodule SportywebWeb.ContactLive.FormComponent do
   end
 
   @impl true
-  def update(%{contact: contact} = assigns, socket) do
-    changeset = Personal.change_contact(contact)
+  def update(%{member: member} = assigns, socket) do
+    changeset = Membership.change_member(member)
 
     step =
-      if !is_nil(contact.id) ||
+      if !is_nil(member.id) ||
            (get_field(changeset, :step) == 1 && get_field(changeset, :type) != "") do
         2
       else
@@ -190,24 +174,24 @@ defmodule SportywebWeb.ContactLive.FormComponent do
      socket
      |> assign(assigns)
      |> assign(:step, step)
-     |> assign(:contact_type, contact.type)
+     |> assign(:member_type, member.type)
      |> assign_new(:form, fn ->
        to_form(changeset)
      end)}
   end
 
   @impl true
-  def handle_event("validate", %{"contact" => contact_params}, socket) do
-    changeset = Personal.change_contact(socket.assigns.contact, contact_params)
+  def handle_event("validate", %{"member" => member_params}, socket) do
+    changeset = Membership.change_member(socket.assigns.member, member_params)
 
     {:noreply,
      socket
-     |> assign(:contact_type, get_field(changeset, :type))
+     |> assign(:member_type, get_field(changeset, :type))
      |> assign(form: to_form(changeset, action: :validate))}
   end
 
-  def handle_event("save", %{"contact" => contact_params}, socket) do
-    save_contact(socket, socket.assigns.action, contact_params)
+  def handle_event("save", %{"member" => member_params}, socket) do
+    save_member(socket, socket.assigns.action, member_params)
   end
 
   @impl true
@@ -215,9 +199,9 @@ defmodule SportywebWeb.ContactLive.FormComponent do
     {:noreply, assign(socket, :step, step)}
   end
 
-  defp save_contact(socket, :edit, contact_params) do
-    case Personal.update_contact(socket.assigns.contact, contact_params) do
-      {:ok, _contact} ->
+  defp save_member(socket, :edit, member_params) do
+    case Membership.update_member(socket.assigns.member, member_params) do
+      {:ok, _member} ->
         {:noreply,
          socket
          |> put_flash(:info, "Kontakt erfolgreich aktualisiert")
@@ -228,14 +212,14 @@ defmodule SportywebWeb.ContactLive.FormComponent do
     end
   end
 
-  defp save_contact(socket, :new, contact_params) do
-    contact_params =
-      Enum.into(contact_params, %{
-        "club_id" => socket.assigns.contact.club.id
+  defp save_member(socket, :new, member_params) do
+    member_params =
+      Enum.into(member_params, %{
+        "club_id" => socket.assigns.member.club.id
       })
 
-    case Personal.create_contact(contact_params) do
-      {:ok, _contact} ->
+    case Membership.create_member(member_params) do
+      {:ok, _member} ->
         {:noreply,
          socket
          |> put_flash(:info, "Kontakt erfolgreich erstellt")

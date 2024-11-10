@@ -27,10 +27,10 @@ defmodule Sportyweb.Accounting do
       from(
         t in Transaction,
         join: contract in assoc(t, :contract),
-        join: contact in assoc(contract, :contact),
+        join: member in assoc(contract, :member),
         join: club in assoc(contract, :club),
         where: club.id == ^club_id,
-        order_by: [t.creation_date, t.name, contact.name]
+        order_by: [t.creation_date, t.name, member.last_name]
       )
 
     Repo.all(query)
@@ -178,11 +178,11 @@ defmodule Sportyweb.Accounting do
   Returns a tuple consisting of a list of transaction data and the calculated sum of their amounts.
   """
   def create_transactions(type, %Date{} = date) do
-    # Make sure all referenced fees are update to date, regarding the ages of contacts.
-    Sportyweb.Legal.update_contract_fees_for_aged_contacts()
+    # Make sure all referenced fees are update to date, regarding the ages of members.
+    Sportyweb.Legal.update_contract_fees_for_aged_members()
 
     contracts =
-      Legal.list_all_contracts([:contact, fee: [:internal_events, subsidy: :internal_events]])
+      Legal.list_all_contracts([:member, fee: [:internal_events, subsidy: :internal_events]])
 
     {transactions, transactions_amount_sum} =
       calculate_transactions_data(type, contracts, date, date)

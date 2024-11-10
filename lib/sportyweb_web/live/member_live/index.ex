@@ -1,12 +1,12 @@
-defmodule SportywebWeb.ContactLive.Index do
+defmodule SportywebWeb.MemberLive.Index do
   use SportywebWeb, :live_view
 
   alias Sportyweb.Organization
-  alias Sportyweb.Personal.Contact
+  alias Sportyweb.Membership.Member
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :club_navigation_current_item, :contacts)}
+    {:ok, assign(socket, :club_navigation_current_item, :members)}
   end
 
   @impl true
@@ -20,11 +20,11 @@ defmodule SportywebWeb.ContactLive.Index do
   end
 
   defp apply_action(socket, :index, %{"club_id" => club_id}) do
-    club = Organization.get_club!(club_id, contacts: :contracts)
+    club = Organization.get_club!(club_id, members: :contracts)
 
     socket
     |> assign(:page_title, "Kontakte & Mitglieder")
     |> assign(:club, club)
-    |> stream(:contacts, club.contacts)
+    |> stream(:members, club.members)
   end
 end

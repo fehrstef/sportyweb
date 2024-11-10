@@ -1,8 +1,8 @@
-defmodule SportywebWeb.ContactLive.NewEdit do
+defmodule SportywebWeb.MemberLive.NewEdit do
   use SportywebWeb, :live_view
 
-  alias Sportyweb.Personal
-  alias Sportyweb.Personal.Contact
+  alias Sportyweb.Membership
+  alias Sportyweb.Membership.Member
   alias Sportyweb.Organization
   alias Sportyweb.Polymorphic.Email
   alias Sportyweb.Polymorphic.FinancialData
@@ -15,12 +15,12 @@ defmodule SportywebWeb.ContactLive.NewEdit do
     ~H"""
     <div>
       <.live_component
-        module={SportywebWeb.ContactLive.FormComponent}
-        id={@contact.id || :new}
+        module={SportywebWeb.MemberLive.FormComponent}
+        id={@member.id || :new}
         title={@page_title}
         action={@live_action}
-        contact={@contact}
-        navigate={if @contact.id, do: ~p"/contacts/#{@contact}", else: ~p"/clubs/#{@club}/contacts"}
+        member={@member}
+        navigate={if @member.id, do: ~p"/members/#{@member}", else: ~p"/clubs/#{@club}/members"}
       />
     </div>
     """
@@ -28,7 +28,7 @@ defmodule SportywebWeb.ContactLive.NewEdit do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :club_navigation_current_item, :contacts)}
+    {:ok, assign(socket, :club_navigation_current_item, :members)}
   end
 
   @impl true
@@ -37,8 +37,8 @@ defmodule SportywebWeb.ContactLive.NewEdit do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
-    contact =
-      Personal.get_contact!(id, [
+    member =
+      Membership.get_member!(id, [
         :club,
         :emails,
         :financial_data,
@@ -49,8 +49,8 @@ defmodule SportywebWeb.ContactLive.NewEdit do
 
     socket
     |> assign(:page_title, "Kontakt bearbeiten")
-    |> assign(:contact, contact)
-    |> assign(:club, contact.club)
+    |> assign(:member, member)
+    |> assign(:club, member.club)
   end
 
   defp apply_action(socket, :new, %{"club_id" => club_id}) do
@@ -58,7 +58,7 @@ defmodule SportywebWeb.ContactLive.NewEdit do
 
     socket
     |> assign(:page_title, "Kontakt erstellen")
-    |> assign(:contact, %Contact{
+    |> assign(:member, %Member{
       club_id: club.id,
       club: club,
       postal_addresses: [%PostalAddress{}],
@@ -72,12 +72,12 @@ defmodule SportywebWeb.ContactLive.NewEdit do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    contact = Personal.get_contact!(id)
-    {:ok, _} = Personal.delete_contact(contact)
+    member = Membership.get_member!(id)
+    {:ok, _} = Membership.delete_member(member)
 
     {:noreply,
      socket
      |> put_flash(:info, "Kontakt erfolgreich gelöscht")
-     |> push_navigate(to: "/clubs/#{contact.club_id}/contacts")}
+     |> push_navigate(to: "/clubs/#{member.club_id}/members")}
   end
 end

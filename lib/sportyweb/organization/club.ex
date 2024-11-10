@@ -14,8 +14,8 @@ defmodule Sportyweb.Organization.Club do
   alias Sportyweb.Organization.ClubNote
   alias Sportyweb.Organization.ClubPhone
   alias Sportyweb.Organization.Department
-  alias Sportyweb.Personal.Contact
-  alias Sportyweb.Personal.ContactGroup
+  alias Sportyweb.Membership.Member
+  alias Sportyweb.Membership.MemberGroup
   alias Sportyweb.Polymorphic.Email
   alias Sportyweb.Polymorphic.FinancialData
   alias Sportyweb.Polymorphic.Note
@@ -27,8 +27,8 @@ defmodule Sportyweb.Organization.Club do
     belongs_to :location, Location
     has_many :all_contracts, Contract
     has_many :all_fees, Fee
-    has_many :contacts, Contact, preload_order: [asc: :name]
-    has_many :contact_groups, ContactGroup
+    has_many :members, Member, preload_order: [asc: :last_name]
+    has_many :member_groups, MemberGroup
     has_many :departments, Department, preload_order: [asc: :name]
     has_many :events, Event
     has_many :subsidies, Subsidy, preload_order: [asc: :name]

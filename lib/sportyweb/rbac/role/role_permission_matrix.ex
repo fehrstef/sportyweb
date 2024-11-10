@@ -23,7 +23,7 @@ defmodule Sportyweb.RBAC.Role.RolePermissionMatrix do
         EventLive: [:index, :new, :edit, :show],
         DepartmentLive: [:index, :new, :edit, :show],
         GroupLive: [:index, :new, :edit, :show],
-        ContactLive: [:index, :new, :edit, :show],
+        MemberLive: [:index, :new, :edit, :show],
         LocationLive: [:index, :new, :edit, :show],
         EquipmentLive: [:index, :new, :edit, :show],
         FeeLive: [:index, :new, :edit, :show]
@@ -37,7 +37,7 @@ defmodule Sportyweb.RBAC.Role.RolePermissionMatrix do
         EventLive: [:index, :show],
         DepartmentLive: [:index, :new, :show],
         GroupLive: [:index, :new, :show],
-        ContactLive: [:index, :new, :edit, :show],
+        MemberLive: [:index, :new, :edit, :show],
         LocationLive: [:index, :show],
         EquipmentLive: [:index, :show],
         FeeLive: [:index, :new, :edit, :show]
@@ -71,7 +71,7 @@ defmodule Sportyweb.RBAC.Role.RolePermissionMatrix do
         Name: "Öffentlichkeitsarbeit",
         Info:
           "verfügt über die notwendigen lesenden und schreibenden Zugriffe auf alle Ressourcen und Operationen, die im Kontext der Öffentlichkeitsarbeit stehen.",
-        ContactLive: [:index, :new, :edit, :show]
+        MemberLive: [:index, :new, :edit, :show]
       },
       jugendleitung: %{
         Name: "Jugendleitung",
@@ -89,7 +89,7 @@ defmodule Sportyweb.RBAC.Role.RolePermissionMatrix do
         Name: "Mitgliederverwaltung",
         Info:
           "verfügt über die notwendigen lesenden und schreibenden Zugriffe auf alle Ressourcen und Operationen, die im Kontext der Verwaltung von Mitgliedern stehen.",
-        ContactLive: [:index, :new, :edit, :show]
+        MemberLive: [:index, :new, :edit, :show]
       }
     ]
   end

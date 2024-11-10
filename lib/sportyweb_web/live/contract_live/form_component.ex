@@ -7,7 +7,7 @@ defmodule SportywebWeb.ContractLive.FormComponent do
   alias Sportyweb.Organization.Club
   alias Sportyweb.Organization.Department
   alias Sportyweb.Organization.Group
-  alias Sportyweb.Personal
+  alias Sportyweb.Membership
 
   @impl true
   def render(assigns) do
@@ -29,10 +29,10 @@ defmodule SportywebWeb.ContractLive.FormComponent do
             <.input_grid>
               <div class="col-span-12 md:col-span-6">
                 <.input
-                  field={@form[:contact_id]}
+                  field={@form[:member_id]}
                   type="select"
                   label="Kontakt"
-                  options={@contact_options |> Enum.map(&{&1.name, &1.id})}
+                  options={@member_options |> Enum.map(&{&1.name, &1.id})}
                   prompt="Bitte auswählen"
                   phx-change="update_fee_options"
                 />
@@ -72,12 +72,12 @@ defmodule SportywebWeb.ContractLive.FormComponent do
 
   @impl true
   def update(%{contract: contract} = assigns, socket) do
-    contact_options = Personal.list_contract_contact_options(contract, assigns.contract_object)
+    member_options = Membership.list_contract_member_options(contract, assigns.contract_object)
 
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:contact_options, contact_options)
+     |> assign(:member_options, member_options)
      |> assign_new(:form, fn ->
        to_form(Legal.change_contract(contract))
      end)
@@ -95,8 +95,8 @@ defmodule SportywebWeb.ContractLive.FormComponent do
   end
 
   @impl true
-  def handle_event("update_fee_options", %{"contract" => %{"contact_id" => contact_id}}, socket) do
-    {:noreply, assign_fee_options(socket, contact_id)}
+  def handle_event("update_fee_options", %{"contract" => %{"member_id" => member_id}}, socket) do
+    {:noreply, assign_fee_options(socket, member_id)}
   end
 
   defp save_contract(socket, :edit, contract_params) do
@@ -138,11 +138,11 @@ defmodule SportywebWeb.ContractLive.FormComponent do
     end
   end
 
-  defp assign_fee_options(socket, contact_id) do
+  defp assign_fee_options(socket, member_id) do
     assign(
       socket,
       :fee_options,
-      Finance.list_contract_fee_options(socket.assigns.contract_object, contact_id)
+      Finance.list_contract_fee_options(socket.assigns.contract_object, member_id)
     )
   end
 

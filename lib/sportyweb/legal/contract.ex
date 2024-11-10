@@ -12,13 +12,13 @@ defmodule Sportyweb.Legal.Contract do
   alias Sportyweb.Organization.DepartmentContract
   alias Sportyweb.Organization.Group
   alias Sportyweb.Organization.GroupContract
-  alias Sportyweb.Personal.Contact
+  alias Sportyweb.Membership.Member
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "contracts" do
     belongs_to :club, Club
-    belongs_to :contact, Contact
+    belongs_to :member, Member
     belongs_to :fee, Fee
     has_many :transactions, Transaction
     many_to_many :clubs, Club, join_through: ClubContract
@@ -44,7 +44,7 @@ defmodule Sportyweb.Legal.Contract do
   end
 
   @doc """
-  A contract "connects" a contact, a fee and the actual "object" the contract is about.
+  A contract "connects" a member, a fee and the actual "object" the contract is about.
   This object (not in the OOP sense!) could be an instance of the entities
   club, department or group. Others could be added in the future.
   This function automatically determines to which entity and especially to which
@@ -78,7 +78,7 @@ defmodule Sportyweb.Legal.Contract do
       attrs,
       [
         :club_id,
-        :contact_id,
+        :member_id,
         :fee_id,
         :signing_date,
         :first_billing_date,
@@ -90,7 +90,7 @@ defmodule Sportyweb.Legal.Contract do
     )
     |> validate_required([
       :club_id,
-      :contact_id,
+      :member_id,
       :fee_id,
       :signing_date,
       :start_date

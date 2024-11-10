@@ -13,11 +13,11 @@ defmodule Sportyweb.PersonalTest do
     @invalid_attrs %{
       organization_name: nil,
       organization_type: nil,
-      person_birthday: nil,
-      person_first_name_1: nil,
-      person_first_name_2: nil,
-      person_gender: nil,
-      person_last_name: nil,
+      birthday: nil,
+      first_name_1: nil,
+      first_name_2: nil,
+      gender: nil,
+      last_name: nil,
       type: nil
     }
 
@@ -62,11 +62,11 @@ defmodule Sportyweb.PersonalTest do
         club_id: club.id,
         organization_name: "some organization_name",
         organization_type: "club",
-        person_birthday: ~D[2023-02-15],
-        person_first_name_1: "some person_first_name_1",
-        person_first_name_2: "some person_first_name_2",
-        person_gender: "female",
-        person_last_name: "some person_last_name",
+        birthday: ~D[2023-02-15],
+        first_name_1: "some first_name_1",
+        first_name_2: "some first_name_2",
+        gender: "female",
+        last_name: "some last_name",
         type: "person",
         emails: [email_attrs()],
         financial_data: [financial_data_attrs()],
@@ -78,11 +78,11 @@ defmodule Sportyweb.PersonalTest do
       assert {:ok, %Contact{} = contact} = Personal.create_contact(valid_attrs)
       assert contact.organization_name == "some organization_name"
       assert contact.organization_type == "club"
-      assert contact.person_birthday == ~D[2023-02-15]
-      assert contact.person_first_name_1 == "some person_first_name_1"
-      assert contact.person_first_name_2 == "some person_first_name_2"
-      assert contact.person_gender == "female"
-      assert contact.person_last_name == "some person_last_name"
+      assert contact.birthday == ~D[2023-02-15]
+      assert contact.first_name_1 == "some first_name_1"
+      assert contact.first_name_2 == "some first_name_2"
+      assert contact.gender == "female"
+      assert contact.last_name == "some last_name"
       assert contact.type == "person"
     end
 
@@ -96,22 +96,22 @@ defmodule Sportyweb.PersonalTest do
       update_attrs = %{
         organization_name: "some updated organization_name",
         organization_type: "corporation",
-        person_birthday: ~D[2023-02-16],
-        person_first_name_1: "some updated person_first_name_1",
-        person_first_name_2: "some updated person_first_name_2",
-        person_gender: "male",
-        person_last_name: "some updated person_last_name",
+        birthday: ~D[2023-02-16],
+        first_name_1: "some updated first_name_1",
+        first_name_2: "some updated first_name_2",
+        gender: "male",
+        last_name: "some updated last_name",
         type: "organization"
       }
 
       assert {:ok, %Contact{} = contact} = Personal.update_contact(contact, update_attrs)
       assert contact.organization_name == "some updated organization_name"
       assert contact.organization_type == "corporation"
-      assert contact.person_birthday == ~D[2023-02-16]
-      assert contact.person_first_name_1 == "some updated person_first_name_1"
-      assert contact.person_first_name_2 == "some updated person_first_name_2"
-      assert contact.person_gender == "male"
-      assert contact.person_last_name == "some updated person_last_name"
+      assert contact.birthday == ~D[2023-02-16]
+      assert contact.first_name_1 == "some updated first_name_1"
+      assert contact.first_name_2 == "some updated first_name_2"
+      assert contact.gender == "male"
+      assert contact.last_name == "some updated last_name"
       assert contact.type == "organization"
     end
 

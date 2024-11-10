@@ -5,7 +5,7 @@ defmodule Sportyweb.RBAC.Policy do
   alias Sportyweb.Asset
   alias Sportyweb.Calendar
   alias Sportyweb.Finance
-  alias Sportyweb.Personal
+  alias Sportyweb.Membership
 
   alias Sportyweb.RBAC.UserRole
   alias Sportyweb.RBAC.Role.RolePermissionMatrix, as: RPM
@@ -52,7 +52,7 @@ defmodule Sportyweb.RBAC.Policy do
              :RoleLive,
              :LocationLive,
              :EventLive,
-             :ContactLive,
+             :MemberLive,
              :FeeLive
            ] do
     club_id =
@@ -154,7 +154,7 @@ defmodule Sportyweb.RBAC.Policy do
       :DepartmentLive -> id |> Organization.get_department!() |> Map.get(:club_id)
       :GroupLive -> id |> Organization.get_group!() |> Map.get(:department_id)
       :EventLive -> id |> Calendar.get_event!() |> Map.get(:club_id)
-      :ContactLive -> id |> Personal.get_contact!() |> Map.get(:club_id)
+      :MemberLive -> id |> Membership.get_member!() |> Map.get(:club_id)
       :LocationLive -> id |> Asset.get_location!() |> Map.get(:club_id)
       :EquipmentLive -> id |> Asset.get_equipment!() |> Map.get(:location_id)
       :FeeLive -> id |> Finance.get_fee!() |> Map.get(:club_id)
@@ -195,7 +195,7 @@ defmodule Sportyweb.RBAC.Policy do
       :RoleLive -> ~p"/clubs/#{club_id}/roles"
       :DepartmentLive -> ~p"/clubs/#{club_id}/departments/"
       :EventLive -> ~p"/clubs/#{club_id}/events/"
-      :ContactLive -> ~p"/clubs/#{club_id}/contacts"
+      :MemberLive -> ~p"/clubs/#{club_id}/members"
       :LocationLive -> ~p"/clubs/#{club_id}/locations/"
       :FeeLive -> ~p"/clubs/#{club_id}/fees/"
     end
@@ -213,7 +213,7 @@ defmodule Sportyweb.RBAC.Policy do
       :DepartmentLive -> ~p"/departments/#{id}/"
       :GroupLive -> ~p"/groups/#{id}/"
       :EventLive -> ~p"/events/#{id}/"
-      :ContactLive -> ~p"/contacts/#{id}/"
+      :MemberLive -> ~p"/members/#{id}/"
       :LocationLive -> ~p"/locations/#{id}/"
       :EquipmentLive -> ~p"/equipment/#{id}/"
       :FeeLive -> ~p"/fees/#{id}/"

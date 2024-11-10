@@ -4,8 +4,8 @@ defmodule Sportyweb.Finance.Forecast do
   import SportywebWeb.CommonValidations
 
   schema "forecasts" do
-    field :type, :string, default: "contact", virtual: true
-    field :contact_id, :string, default: "", virtual: true
+    field :type, :string, default: "member", virtual: true
+    field :member_id, :string, default: "", virtual: true
     field :subsidy_id, :string, default: "", virtual: true
     field :current_date, :date, default: Date.utc_today(), virtual: true
     field :start_date, :date, default: nil, virtual: true
@@ -14,7 +14,7 @@ defmodule Sportyweb.Finance.Forecast do
 
   def get_valid_types do
     [
-      [key: "Gebühren von Kontakten", value: "contact"],
+      [key: "Gebühren von Kontakten", value: "member"],
       [key: "Zuschüsse", value: "subsidy"]
     ]
   end
@@ -26,7 +26,7 @@ defmodule Sportyweb.Finance.Forecast do
       attrs,
       [
         :type,
-        :contact_id,
+        :member_id,
         :subsidy_id,
         :start_date,
         :end_date

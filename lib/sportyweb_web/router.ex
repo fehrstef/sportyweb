@@ -135,15 +135,15 @@ defmodule SportywebWeb.Router do
       live "/groups/:id/fees", GroupLive.FeeNew, :index
       live "/groups/:id/fees/new", GroupLive.FeeNew, :new
 
-      # Contacts (Each belongs to a club)
+      # Members (Each belongs to a club)
 
-      live "/contacts", ContactLive.Index, :index_root
-      live "/clubs/:club_id/contacts", ContactLive.Index, :index
+      live "/members", MemberLive.Index, :index_root
+      live "/clubs/:club_id/members", MemberLive.Index, :index
 
-      live "/clubs/:club_id/contacts/new", ContactLive.NewEdit, :new
-      live "/contacts/:id/edit", ContactLive.NewEdit, :edit
+      live "/clubs/:club_id/members/new", MemberLive.NewEdit, :new
+      live "/members/:id/edit", MemberLive.NewEdit, :edit
 
-      live "/contacts/:id", ContactLive.Show, :show
+      live "/members/:id", MemberLive.Show, :show
 
       # Locations (Each belongs to a club)
 
@@ -175,13 +175,13 @@ defmodule SportywebWeb.Router do
 
       live "/clubs/:club_id/forecasts", ForecastLive.NewEdit, :new
 
-      live "/clubs/:club_id/forecasts/start/:start_date/end/:end_date/contact",
+      live "/clubs/:club_id/forecasts/start/:start_date/end/:end_date/member",
            ForecastLive.Show,
-           :show_contacts_all
+           :show_members_all
 
-      live "/clubs/:club_id/forecasts/start/:start_date/end/:end_date/contact/:contact_id",
+      live "/clubs/:club_id/forecasts/start/:start_date/end/:end_date/member/:member_id",
            ForecastLive.Show,
-           :show_contacts_single
+           :show_members_single
 
       live "/clubs/:club_id/forecasts/start/:start_date/end/:end_date/subsidy",
            ForecastLive.Show,

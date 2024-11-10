@@ -34,7 +34,7 @@
       <% end %>
     </:item>
     <:item title="Nur für Kontaktgruppen-Mitglieder?">
-      <%= format_boolean_field(@fee.is_for_contact_group_contacts_only) %>
+      <%= format_boolean_field(@fee.is_for_member_group_members_only) %>
     </:item>
     <:item title="Mindestalter">
       <%= format_integer_field(@fee.minimum_age_in_years) %>

@@ -45,7 +45,7 @@ defmodule Sportyweb.Finance.Fee do
     field :description, :string, default: ""
     field :amount, Money.Ecto.Composite.Type, default_currency: :EUR
     field :amount_one_time, Money.Ecto.Composite.Type, default_currency: :EUR
-    field :is_for_contact_group_contacts_only, :boolean, default: false
+    field :is_for_member_group_members_only, :boolean, default: false
     field :minimum_age_in_years, :integer, default: nil
     field :maximum_age_in_years, :integer, default: nil
 
@@ -91,7 +91,7 @@ defmodule Sportyweb.Finance.Fee do
         :description,
         :amount,
         :amount_one_time,
-        :is_for_contact_group_contacts_only,
+        :is_for_member_group_members_only,
         :minimum_age_in_years,
         :maximum_age_in_years
       ],

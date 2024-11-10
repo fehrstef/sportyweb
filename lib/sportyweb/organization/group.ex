@@ -24,7 +24,7 @@ defmodule Sportyweb.Organization.Group do
     many_to_many :notes, Note, join_through: GroupNote
     many_to_many :phones, Phone, join_through: GroupPhone
     # This line has to be below "many_to_many :contracts"!
-    has_many :contacts, through: [:contracts, :contact]
+    has_many :members, through: [:contracts, :member]
 
     field :name, :string, default: ""
     field :reference_number, :string, default: ""
