@@ -142,6 +142,11 @@ if Mix.env() in [:dev] do
     password: "zczZjRMGI3MTNlM"
   })
 
+  Accounts.register_user(%{
+    email: "fehrstef@gmail.com",
+    password: "12345678"
+  })
+
   User
   |> Repo.all()
   |> Enum.map(&Repo.update!(User.confirm_changeset(&1)))
