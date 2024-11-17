@@ -13,9 +13,16 @@
 <.card>
     <.live_component
     module={SportywebWeb.SortingInputComponent}
-    id={SortingId}
+    id={SortingInput}
     action={@live_action}
     sorted_by_options={["Vorname", "Nachname", "Geburtsdatum"]}
+    />
+
+    <.live_component
+    module={SportywebWeb.FilterInputComponent}
+    id={FilterInput}
+    action={@live_action}
+    filter_attributes={["Vorname", "Nachname"]}
     />
 
     <%= if @sorting do %>
@@ -24,6 +31,18 @@
         <% end %>
             <%= if @sorting.sort_direction do %>
         <%= @sorting.sort_direction %>
+        <% end %>
+    <% end %>
+
+    <%= if @filter do %>
+        <%= if @filter.attribute do %>
+            <%= @filter.attribute %>
+        <% end %>
+        <%= if @filter.operator do %>
+            <%= @filter.operator %>
+        <% end %>
+        <%= if @filter.value do %>
+            <%= @filter.value %>
         <% end %>
     <% end %>
 

@@ -5,13 +5,15 @@ defmodule SportywebWeb.MemberLive.Index do
   alias Sportyweb.Membership
   alias Sportyweb.Membership.Member
   alias SportywebWeb.Sorting
+  alias SportywebWeb.Filter
   alias Sportyweb.Legal.Contract
 
   @impl true
   def mount(_params, _session, socket) do
     {:ok, socket
       |> assign(:club_navigation_current_item, :members)
-      |> assign(:sorting, %Sorting{sort_direction: "asc", sorted_attribute: "Nachname"})
+      |> assign(:sorting, %Sorting{})
+      |> assign(:filter, %Filter{})
     }
   end
 
@@ -57,27 +59,44 @@ defmodule SportywebWeb.MemberLive.Index do
 
   @impl true
   def handle_info({SportywebWeb.SortingInputComponent, {:sorting_saved, %Sorting{} = sorting}}, socket) do
+    IO.puts("sorting was changed to #{inspect(sorting)}}")
     {:noreply, assign(socket, :sorting, sorting) |> assign_members()}
   end
+
+  @impl true
+  def handle_info({SportywebWeb.FilterInputComponent, {:filter_saved, %Filter{} = filter}}, socket) do
+    IO.puts("filter was changed to #{inspect(filter)}}")
+    {:noreply, assign(socket, :filter, filter) |> assign_members()}
+  end
+
 
   def assign_members(socket) do
     club_id = socket.assigns.club.id
     sorting = socket.assigns.sorting
+    filter = socket.assigns.filter
 
     mapped_sorting =
      case {sorting.sort_direction, sorting.sorted_attribute } do
-       nil -> nil
-       {_, nil} -> nil
        {"asc", "Vorname"} -> [asc: :first_name]
        {"desc", "Vorname"} -> [desc: :first_name]
        {"asc", "Nachname"} -> [asc: :last_name]
        {"desc", "Nachname"} -> [desc: :last_name]
        {"asc", "Geburtsdatum"} -> [asc: :birthday]
        {"desc", "Geburtsdatum"} -> [desc: :birthday]
+       {_, _} -> nil
     end
+
+    mapped_filter =
+      case {filter.attribute, filter.value} do
+        {"Vorname", value} -> [first_name: value]
+        {"Nachname", value} -> [last_name: value]
+        {"Geburtsdatum", value} -> [birthday: value]
+        {_, _} -> nil
+      end
 
     query = %{club_id: club_id,
       order_by: mapped_sorting,
+      filter: mapped_filter,
       preloads: [contracts: [:departments, :groups, :fee]]
       }
 

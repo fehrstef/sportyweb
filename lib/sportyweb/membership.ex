@@ -39,6 +39,14 @@ defmodule Sportyweb.Membership do
   def list_members_by_query( %{:club_id => club_id} = query) do
     mapped_query = from(m in Member, where: m.club_id == ^club_id)
 
+    filter = query[:filter]
+    mapped_query = if filter == nil do
+        mapped_query
+      else
+        mapped_query
+        |> where(^[first_name: "Uli"])
+    end
+
     order_by = query[:order_by]
     mapped_query = if order_by == nil  do
         mapped_query
