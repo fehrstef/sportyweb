@@ -11,6 +11,25 @@
 </.header>
 
 <.card>
+    <.live_component
+    module={SportywebWeb.SortingInputComponent}
+    id={SortingId}
+    action={@live_action}
+    sorted_by_options={["Vorname", "Nachname", "Geburtsdatum"]}
+    />
+
+    <%= if @sorting do %>
+        <%= if @sorting.sorted_attribute do %>
+            <%= @sorting.sorted_attribute %>
+        <% end %>
+            <%= if @sorting.sort_direction do %>
+        <%= @sorting.sort_direction %>
+        <% end %>
+    <% end %>
+
+</.card>
+
+<.card>
   <%= if Enum.any?(@streams.members.inserts) do %>
     <.table
       id="members"
@@ -23,6 +42,9 @@
       <:col :let={{_id, member}} label="Nachname">
         <%= format_string_field(member.last_name) %>
       </:col>
+    <:col :let={{_id, member}} label="Geburtsdatum">
+        <%= member.birthday %>
+    </:col>
 
       <:col :let={{_id, member}} label="Status">
           <%= get_key_for_value(Member.get_valid_states(), member.state ) %>

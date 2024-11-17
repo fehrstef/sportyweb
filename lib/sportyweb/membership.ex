@@ -36,6 +36,30 @@ defmodule Sportyweb.Membership do
     Repo.preload(list_members(club_id), preloads)
   end
 
+  def list_members_by_query( %{:club_id => club_id} = query) do
+    mapped_query = from(m in Member, where: m.club_id == ^club_id)
+
+    order_by = query[:order_by]
+    mapped_query = if order_by == nil  do
+        mapped_query
+        |> order_by(:last_name)
+      else
+        mapped_query
+        |> order_by(^order_by)
+      end
+
+      matches =  Repo.all(mapped_query)
+
+      preloads = query[:preloads]
+      if preloads == nil  do
+        matches
+      else
+        IO.puts("load preloads")
+        matches
+        |> Repo.preload(preloads)
+      end
+  end
+
   @doc """
   Returns a list of members that are possible options for the given contract.
   The list won't include members that have an active (non-archived) contract
