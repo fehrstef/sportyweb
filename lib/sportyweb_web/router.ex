@@ -59,6 +59,8 @@ defmodule SportywebWeb.Router do
       live "/users/reset_password/:token", UserResetPasswordLive, :edit
     end
 
+    get "/download/members", SportywebWeb.DownloadController, :members
+
     post "/users/log_in", UserSessionController, :create
   end
 

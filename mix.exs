@@ -120,7 +120,10 @@ defmodule Sportyweb.MixProject do
       # TimeZoneDatabase for DateTime (which per default only supports UTC)
       # https://hexdocs.pm/tzdata/readme.html
       # https://github.com/lau/tzdata
-      {:tzdata, "~> 1.1"}
+      {:tzdata, "~> 1.1"},
+
+      {:elixlsx, "~> 0.6.0"},
+      {:exceed, "~> 0.1"}
     ]
   end
 

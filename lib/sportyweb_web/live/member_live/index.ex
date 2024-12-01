@@ -105,4 +105,46 @@ defmodule SportywebWeb.MemberLive.Index do
     stream(socket, :members, members, reset: true)
   end
 
+  @impl true
+  def handle_event("export", _, socket) do
+    IO.puts("export clicked")
+    export_list(socket)
+
+#    {:noreply, socket}
+  end
+
+  def export_list(socket) do
+    club_id = socket.assigns.club.id
+    members = Membership.list_members(club_id)
+
+    # export with elixlsx
+#    sheet = Elixlsx.Sheet.with_name("Sheet 1")
+#            |> Elixlsx.Sheet.set_cell("A1", "Hello", bold: true)
+#    Enum.with_index(members, fn m, i ->
+#      sheet
+#      |> Elixlsx.Sheet.set_cell("A" + (i + 1), m.last_name)
+#    end)
+#    Elixlsx.Workbook.append_sheet(%Elixlsx.Workbook{}, sheet ) |> Elixlsx.write_to("/tmp/elixlsx.xlsx")
+
+    # export with exceed
+    headings = ["Nachname", "Vorname", "Geschlecht", "Status", "Geburtsdatum"];
+    rows = Enum.map(members, fn m -> [m.last_name, m.first_name, m.gender, m.state, m.birthday] end)
+    worksheet = Exceed.Worksheet.new("Sheet Name", headings, rows)
+
+    workbook =
+      Exceed.Workbook.new("Creator Name")
+      |> Exceed.Workbook.add_worksheet(worksheet)
+
+    workbook
+      |> Exceed.stream!()
+       |> Stream.into(File.stream!("/tmp/exceed.xlsx"))
+       |> Stream.run()
+
+    send_download(
+      socket,
+      {:binary, Base.decode64!(workbook)},
+      content_type: "application/xlsx",
+      filename: "export.xlsx"
+    )
+  end
 end
