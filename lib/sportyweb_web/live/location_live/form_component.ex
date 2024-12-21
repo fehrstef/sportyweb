@@ -9,7 +9,7 @@ defmodule SportywebWeb.LocationLive.FormComponent do
     ~H"""
     <div>
       <.header>
-        <%= @title %>
+        {@title}
       </.header>
 
       <.card>
@@ -40,40 +40,19 @@ defmodule SportywebWeb.LocationLive.FormComponent do
             </.input_grid>
 
             <.input_grid class="pt-6">
-              <.inputs_for :let={postal_address} field={@form[:postal_addresses]}>
-                <.live_component
-                  module={SportywebWeb.PolymorphicLive.PostalAddressesFormComponent}
-                  id={"postal_addresses_#{postal_address.index}"}
-                  postal_address={postal_address}
-                />
-              </.inputs_for>
+              <SportywebWeb.PolymorphicLive.PostalAddressesFormComponent.render form={@form} />
             </.input_grid>
 
             <.input_grid class="pt-6">
-              <.inputs_for :let={email} field={@form[:emails]}>
-                <.live_component
-                  module={SportywebWeb.PolymorphicLive.EmailFormComponent}
-                  id={"email_#{email.index}"}
-                  email={email}
-                />
-              </.inputs_for>
-
-              <.inputs_for :let={phone} field={@form[:phones]}>
-                <.live_component
-                  module={SportywebWeb.PolymorphicLive.PhoneFormComponent}
-                  id={"phone_#{phone.index}"}
-                  phone={phone}
-                />
-              </.inputs_for>
+              <SportywebWeb.PolymorphicLive.EmailsFormComponent.render form={@form} />
             </.input_grid>
 
             <.input_grid class="pt-6">
-              <div class="col-span-12">
-                <.label>Notizen (optional)</.label>
-                <.inputs_for :let={note} field={@form[:notes]}>
-                  <.input field={note[:content]} type="textarea" />
-                </.inputs_for>
-              </div>
+              <SportywebWeb.PolymorphicLive.PhonesFormComponent.render form={@form} />
+            </.input_grid>
+
+            <.input_grid class="pt-6">
+              <SportywebWeb.PolymorphicLive.NotesFormComponent.render form={@form} />
             </.input_grid>
 
             <.input_grid :if={@location.id && !show_delete_button?(@location)} class="pt-6">

@@ -1,5 +1,5 @@
 <.header>
-  <%= @page_title %>
+  {@page_title}
   <:actions>
     <.link navigate={~p"/equipment/#{@equipment}/edit"}>
       <.button>Equipment bearbeiten</.button>
@@ -10,38 +10,34 @@
 <.card>
   <.list>
     <:item title="Standort">
-      <%= format_string_field(@equipment.location.name) %>
+      {format_string_field(@equipment.location.name)}
     </:item>
     <:item title="Referenznummer">
-      <%= format_string_field(@equipment.reference_number) %>
+      {format_string_field(@equipment.reference_number)}
     </:item>
     <:item title="Seriennummer">
-      <%= format_string_field(@equipment.serial_number) %>
+      {format_string_field(@equipment.serial_number)}
     </:item>
     <:item title="Beschreibung">
-      <%= format_string_field(@equipment.description) %>
+      {format_string_field(@equipment.description)}
     </:item>
     <:item title="Gekauft am">
-      <%= format_date_field_dmy(@equipment.purchase_date) %>
+      {format_date_field_dmy(@equipment.purchase_date)}
     </:item>
     <:item title="Nutzung ab">
-      <%= format_date_field_dmy(@equipment.commission_date) %>
+      {format_date_field_dmy(@equipment.commission_date)}
     </:item>
     <:item title="Nutzung bis">
-      <%= format_date_field_dmy(@equipment.decommission_date) %>
+      {format_date_field_dmy(@equipment.decommission_date)}
     </:item>
     <:item title="E-Mail">
-      <%= format_struct_list(@equipment.emails, :address) %>
+      {format_struct_list(@equipment.emails, :address)}
     </:item>
     <:item title="Telefon">
-      <%= format_struct_list(@equipment.phones, :number) %>
+      {format_struct_list(@equipment.phones, :number)}
     </:item>
     <:item title="Notizen">
-      <.live_component
-        module={SportywebWeb.PolymorphicLive.NotesShowComponent}
-        id="notes"
-        notes={@equipment.notes}
-      />
+      <SportywebWeb.PolymorphicLive.NotesShowComponent.render notes={@equipment.notes} />
     </:item>
   </.list>
 </.card>
@@ -57,11 +53,7 @@
 
 <.card>
   <%= if Enum.any?(@equipment.fees) do %>
-    <.live_component
-      module={SportywebWeb.FeeLive.IndexTableComponent}
-      id="fees-table"
-      fees={@equipment.fees}
-    />
+    <SportywebWeb.FeeLive.IndexTableComponent.render fees={@equipment.fees} />
   <% else %>
     <p>Bisher wurde noch keine equipmentspezifische Gebühr erstellt.</p>
   <% end %>

@@ -1,5 +1,5 @@
 <.header>
-  <%= @page_title %>
+  {@page_title}
   <:actions>
     <.link navigate={~p"/subsidies/#{@subsidy}/edit"}>
       <.button>Zuschuss bearbeiten</.button>
@@ -10,33 +10,27 @@
 <.card>
   <.list>
     <:item title="Referenznummer">
-      <%= format_string_field(@subsidy.reference_number) %>
+      {format_string_field(@subsidy.reference_number)}
     </:item>
     <:item title="Beschreibung">
-      <%= format_string_field(@subsidy.description) %>
+      {format_string_field(@subsidy.description)}
     </:item>
     <:item title="Betrag">
-      <%= @subsidy.amount %>
+      {@subsidy.amount}
     </:item>
     <:item title="Art der Abrechnung">
-      <.live_component
-        module={SportywebWeb.PolymorphicLive.InternalEventShowComponent}
-        id="internal_events"
-        internal_events={@subsidy.internal_events}
-      />
+      <SportywebWeb.PolymorphicLive.InternalEventShowComponent.render internal_events={
+        @subsidy.internal_events
+      } />
     </:item>
     <:item :if={Subsidy.is_archived?(@subsidy)} title="Archiviert">
       <.icon name="hero-archive-box" class="ml-1 inline-block w-[20px] text-zinc-800" />
     </:item>
     <:item title="Notizen">
-      <.live_component
-        module={SportywebWeb.PolymorphicLive.NotesShowComponent}
-        id="notes"
-        notes={@subsidy.notes}
-      />
+      <SportywebWeb.PolymorphicLive.NotesShowComponent.render notes={@subsidy.notes} />
     </:item>
     <:item title="Einsatz">
-      Dieser Zuschuss wird derzeit in <%= Enum.count(@subsidy.fees) %> Gebühren verwendet.
+      Dieser Zuschuss wird derzeit in {Enum.count(@subsidy.fees)} Gebühren verwendet.
     </:item>
   </.list>
 </.card>

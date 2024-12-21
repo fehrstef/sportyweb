@@ -9,7 +9,7 @@ defmodule SportywebWeb.SubsidyLive.FormComponent do
     ~H"""
     <div>
       <.header>
-        <%= @title %>
+        {@title}
       </.header>
 
       <.card>
@@ -49,22 +49,11 @@ defmodule SportywebWeb.SubsidyLive.FormComponent do
             </.input_grid>
 
             <.input_grid class="pt-6">
-              <.inputs_for :let={internal_event} field={@form[:internal_events]}>
-                <.live_component
-                  module={SportywebWeb.PolymorphicLive.InternalEventFormComponent}
-                  id={"internal_event_#{internal_event.index}"}
-                  internal_event={internal_event}
-                />
-              </.inputs_for>
+              <SportywebWeb.PolymorphicLive.InternalEventFormComponent.render form={@form} />
             </.input_grid>
 
             <.input_grid class="pt-6">
-              <div class="col-span-12">
-                <.label>Notizen (optional)</.label>
-                <.inputs_for :let={note} field={@form[:notes]}>
-                  <.input field={note[:content]} type="textarea" />
-                </.inputs_for>
-              </div>
+              <SportywebWeb.PolymorphicLive.NotesFormComponent.render form={@form} />
             </.input_grid>
 
             <.input_grid :if={show_archive_message?(@subsidy)} class="pt-6">
@@ -76,7 +65,7 @@ defmodule SportywebWeb.SubsidyLive.FormComponent do
                   Dieser Zuschuss kann nicht gelöscht, sondern nur archiviert werden, denn:
                   <ul class="list-disc pl-4 mb-3">
                     <li :if={Enum.any?(@subsidy.fees)}>
-                      Er wird von <%= Enum.count(@subsidy.fees) %> Gebühren verwendet.
+                      Er wird von {Enum.count(@subsidy.fees)} Gebühren verwendet.
                     </li>
                   </ul>
                   Zur Archivierung bitte das gewünschte Datum im Feld "Archiviert ab" eintragen und "Speichern" klicken.

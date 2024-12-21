@@ -1,23 +1,22 @@
 defmodule SportywebWeb.PolymorphicLive.NotesShowComponent do
-  use SportywebWeb, :live_component
+  use SportywebWeb, :html
   import SportywebWeb.CommonHelper
 
-  @impl true
+  attr :notes, :list, required: true
+
   def render(assigns) do
     ~H"""
-    <div>
-      <%= if Enum.any?(@notes) do %>
-        <div class="divide-y divide-zinc-100">
-          <%= for note <- @notes do %>
-            <div class="py-4 first:pt-0 last:pb-0">
-              <%= format_string_field(note.content) %>
-            </div>
-          <% end %>
-        </div>
-      <% else %>
-        -
-      <% end %>
-    </div>
+    <%= if Enum.any?(@notes) do %>
+      <div class="divide-y divide-zinc-100">
+        <%= for note <- @notes do %>
+          <div class="py-4 first:pt-0 last:pb-0">
+            {format_string_field(note.content)}
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      -
+    <% end %>
     """
   end
 end
