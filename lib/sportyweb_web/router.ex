@@ -63,6 +63,14 @@ defmodule SportywebWeb.Router do
   end
 
   scope "/", SportywebWeb do
+    pipe_through [:browser]
+
+    live_session :public, on_mount: [{SportywebWeb.UserAuth, :mount_current_user}]  do
+      live "/membership_applications/:club_id", MembershipApplicationLive, :index
+    end
+  end
+
+  scope "/", SportywebWeb do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :require_authenticated_user,

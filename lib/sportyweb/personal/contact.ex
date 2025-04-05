@@ -128,7 +128,7 @@ defmodule Sportyweb.Personal.Contact do
     |> cast_assoc(:contact_groups, required: false)
     |> cast_assoc(:emails, required: true)
     |> cast_assoc(:financial_data, required: true)
-    |> cast_assoc(:notes, required: true)
+    |> cast_assoc(:notes, required: false)
     |> cast_assoc(:phones, required: true)
     |> cast_assoc(:postal_addresses, required: true)
     |> validate_required([:type])
