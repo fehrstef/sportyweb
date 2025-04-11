@@ -50,7 +50,7 @@ defmodule SportywebWeb.ContactLive.ContactsTableComponent do
             </div>
             <div class="col-span-2">
               <.input
-                name="state-options"
+                name="gender-options"
                 type="select"
                 value={@filters["Geschlecht"]}
                 options={Contact.get_valid_genders()}

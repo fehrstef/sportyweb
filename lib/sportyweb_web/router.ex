@@ -65,7 +65,7 @@ defmodule SportywebWeb.Router do
   scope "/", SportywebWeb do
     pipe_through [:browser]
 
-    live_session :public, on_mount: [{SportywebWeb.UserAuth, :mount_current_user}]  do
+    live_session :public, on_mount: [{SportywebWeb.UserAuth, :mount_current_user}] do
       live "/membership_applications/:club_id", MembershipApplicationLive, :index
     end
   end
@@ -154,6 +154,10 @@ defmodule SportywebWeb.Router do
       live "/clubs/:club_id/contracts/new", ContractLive.NewEdit, :new
       live "/contracts/:id/edit", ContractLive.NewEdit, :edit
       live "/contracts/:id", ContractLive.Show, :show
+
+      #
+      live "/clubs/:club_id/requests", RequestLive.Index, :index
+      live "/requests/:id", RequestLive.Show, :show
 
       # Locations (Each belongs to a club)
 

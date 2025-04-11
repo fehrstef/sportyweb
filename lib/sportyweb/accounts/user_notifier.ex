@@ -20,15 +20,19 @@ defmodule Sportyweb.Accounts.UserNotifier do
   Deliver instructions to reset a user password.
   """
   def deliver_reset_password_instructions(user, url) do
-    Mailer.deliver_system_notification(user.email, "Anweisungen zum Zurücksetzen des Passworts", """
-    Hallo #{user.email},
+    Mailer.deliver_system_notification(
+      user.email,
+      "Anweisungen zum Zurücksetzen des Passworts",
+      """
+      Hallo #{user.email},
 
-    Sie können Ihr Passwort zurücksetzen, indem Sie die folgende URL besuchen:
+      Sie können Ihr Passwort zurücksetzen, indem Sie die folgende URL besuchen:
 
-    #{url}
+      #{url}
 
-    Wenn Sie diese Änderung nicht angefordert haben, ignorieren Sie dies bitte.
-    """)
+      Wenn Sie diese Änderung nicht angefordert haben, ignorieren Sie dies bitte.
+      """
+    )
   end
 
   @doc """
@@ -50,14 +54,18 @@ defmodule Sportyweb.Accounts.UserNotifier do
   Deliver information of being added to a club.
   """
   def deliver_info_of_being_added_to_club(user, club, url) do
-    Mailer.deliver_system_notification(user.email, "Sie wurden dem Verein #{club.name} auf Sportyweb hinzugefügt", """
-    Hallo #{user.email},
+    Mailer.deliver_system_notification(
+      user.email,
+      "Sie wurden dem Verein #{club.name} auf Sportyweb hinzugefügt",
+      """
+      Hallo #{user.email},
 
-    Sie können Ihr Passwort festlegen, indem Sie die folgende URL besuchen:
+      Sie können Ihr Passwort festlegen, indem Sie die folgende URL besuchen:
 
-    #{url}
+      #{url}
 
-    Wenn Sie die Erstellung eines Kontos bei uns nicht beantragt haben, ignorieren Sie dies bitte.
-    """)
+      Wenn Sie die Erstellung eines Kontos bei uns nicht beantragt haben, ignorieren Sie dies bitte.
+      """
+    )
   end
 end

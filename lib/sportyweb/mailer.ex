@@ -5,7 +5,6 @@ defmodule Sportyweb.Mailer do
 
   # Delivers the email using the application mailer.
   def deliver_system_notification(recipient, subject, body) do
-
     escaped_body = """
 
         ==============================
@@ -26,5 +25,4 @@ defmodule Sportyweb.Mailer do
       {:ok, email}
     end
   end
-
 end

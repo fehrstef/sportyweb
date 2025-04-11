@@ -44,7 +44,7 @@ defmodule SportywebWeb.SortAndFilterTableHelper do
       end
 
       @impl true
-      def handle_event("quick_filter_changed", %{"column_label" => column_label} = map, socket ) do
+      def handle_event("quick_filter_changed", %{"column_label" => column_label} = map, socket) do
         handle_event("remove_filter", %{"column" => column_label}, socket)
       end
 
@@ -281,5 +281,4 @@ defmodule SportywebWeb.SortAndFilterTableHelper do
   defp case_insensitive_contains(nil, _) do
     false
   end
-
 end

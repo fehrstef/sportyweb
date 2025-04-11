@@ -1,0 +1,35 @@
+<.header>
+  {@page_title}
+</.header>
+
+<.card>
+  Antrag von {@request.author_name} an {Request.get_addressee(@request).name} vom {format_date_field_dmy(
+    @request.opening_date
+  )}
+
+  <%= if !@request.is_author_confirmed do %>
+    Die Bestätigung durch {@request.author_mail} mittels Token {@request.confirmation_token} ist noch offen.
+  <% else %>
+    {@request.author_mail} hat den Antrag am {format_date_field_dmy(@request.confirmation_date)} bestätigt.
+  <% end %>
+
+  <%= if @request.state=="open" do %>
+    Der Antrag wurde noch nicht bearbeitet
+  <% else %>
+    Der Antrag wurde am {format_date_field_dmy(@request.closing_date)} als {get_key_for_value(
+      Request.get_valid_states(),
+      @request.result
+    )} erledigt.
+  <% end %>
+
+  {@request_description} Notiz: {format_string_field(@request.note)}
+
+  <%= if @request.membership !=nil do %>
+    <.link navigate={~p"/contacts/#{@request.membership.contact}"}>Kontaktdaten anzeigen</.link>
+    <.link navigate={~p"/memberships/#{@request.membership}/edit"}>Mitgliedschaft bearbeiten</.link>
+  <% end %>
+
+  <.button phx-click="request_decline">
+    Antrag ablehnen
+  </.button>
+</.card>

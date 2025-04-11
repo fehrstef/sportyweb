@@ -26,6 +26,7 @@ alias Sportyweb.Organization
 alias Sportyweb.Organization.Club
 alias Sportyweb.Organization.Department
 alias Sportyweb.Organization.Group
+alias Sportyweb.Cooperation.Request
 alias Sportyweb.Personal
 alias Sportyweb.Personal.Contact
 alias Sportyweb.Personal.Membership
@@ -131,6 +132,232 @@ defmodule Sportyweb.SeedHelper do
     %Note{
       content: if(:rand.uniform() < 0.7, do: Faker.Lorem.paragraph(), else: "")
     }
+  end
+end
+
+defmodule Sportyweb.ContactSeedHelper do
+  def add_contact(club) do
+    is_main = :rand.uniform() < 0.8
+
+    postal_addresses =
+      cond do
+        :rand.uniform() < 0.85 ->
+          [Map.from_struct(Sportyweb.SeedHelper.get_random_postal_address(is_main))]
+
+        true ->
+          [
+            Map.from_struct(Sportyweb.SeedHelper.get_random_postal_address(is_main)),
+            Map.from_struct(Sportyweb.SeedHelper.get_random_postal_address(false))
+          ]
+      end
+
+    is_main = :rand.uniform() < 0.8
+
+    emails =
+      cond do
+        :rand.uniform() < 0.6 ->
+          [Map.from_struct(Sportyweb.SeedHelper.get_random_email(is_main))]
+
+        true ->
+          [
+            Map.from_struct(Sportyweb.SeedHelper.get_random_email(is_main)),
+            Map.from_struct(Sportyweb.SeedHelper.get_random_email(false))
+          ]
+      end
+
+    is_main = :rand.uniform() < 0.8
+
+    phones =
+      cond do
+        :rand.uniform() < 0.6 ->
+          [Map.from_struct(Sportyweb.SeedHelper.get_random_phone(is_main))]
+
+        true ->
+          [
+            Map.from_struct(Sportyweb.SeedHelper.get_random_phone(is_main)),
+            Map.from_struct(Sportyweb.SeedHelper.get_random_phone(false))
+          ]
+      end
+
+    is_person = :rand.uniform() < 0.8
+
+    # Use the context function instead of Repo.insert!() to invoke the changeset which sets the name.
+    {:ok, %Contact{} = contact} =
+      Personal.create_contact(%{
+        club_id: club.id,
+        type: if(is_person, do: "person", else: "organization"),
+        organization_name:
+          if(is_person,
+            do: "",
+            else:
+              "#{Faker.Company.buzzword_prefix()} #{Faker.Industry.sub_sector()} #{Faker.Company.buzzword_prefix()}"
+          ),
+        organization_type:
+          if(is_person,
+            do: "",
+            else:
+              Contact.get_valid_organization_types()
+              |> Enum.map(fn organization_type -> organization_type[:value] end)
+              |> Enum.random()
+          ),
+        person_last_name: if(is_person, do: Faker.Person.last_name(), else: ""),
+        person_first_name_1: if(is_person, do: Faker.Person.first_name(), else: ""),
+        person_first_name_2:
+          if(is_person && :rand.uniform() > 0.80, do: Faker.Person.first_name(), else: ""),
+        person_gender:
+          if(is_person,
+            do:
+              Contact.get_valid_genders()
+              |> Enum.map(fn gender -> gender[:value] end)
+              |> Enum.random(),
+            else: ""
+          ),
+        person_birthday: if(is_person, do: Faker.Date.date_of_birth(6..99), else: ""),
+        postal_addresses: postal_addresses,
+        emails: emails,
+        phones: phones,
+        financial_data: [Map.from_struct(Sportyweb.SeedHelper.get_random_financial_data(true))],
+        notes: [Map.from_struct(Sportyweb.SeedHelper.get_random_note())]
+      })
+
+    if contact.type == "person" do
+      # create contracts for most persons, why is the club allowed to store their data otherwise?
+      if :rand.uniform() < 0.9 do
+        # make most persons with contracts members
+        {_, club_membership} = add_contract(club, nil, nil, contact, 0.85)
+
+        if club_membership != nil && Enum.any?(club.departments) && :rand.uniform() < 0.3 do
+          department = club.departments |> Enum.random()
+          # make contracts between persons and department / group always memberships
+          add_contract(club, department, nil, contact, 1.1)
+
+          if Enum.any?(department.groups) && :rand.uniform() < 0.3 do
+            group = department.groups |> Enum.random()
+            add_contract(club, department, group, contact, 1.1)
+          end
+        end
+      end
+    end
+  end
+
+  defp add_contract(club, department, group, contact, membership_ratio) do
+    fees =
+      cond do
+        group != nil -> Finance.list_contract_fee_options(group, contact.id)
+        department != nil -> Finance.list_contract_fee_options(department, contact.id)
+        true -> Finance.list_contract_fee_options(club, contact.id)
+      end
+
+    fee = Enum.random(fees)
+
+    department_id = if department != nil, do: department.id, else: nil
+    group_id = if group != nil, do: group.id, else: nil
+
+    membership_state =
+      Membership.get_valid_states()
+      |> Enum.map(fn state -> state[:value] end)
+      |> Enum.random()
+
+    termination_date =
+      if membership_state == "terminated" do
+        Date.add(Date.utc_today(), -14)
+      else
+        nil
+      end
+
+    contract =
+      Repo.insert!(%Contract{
+        club_id: club.id,
+        club: club,
+        partner_department_id: department_id,
+        partner_department: department,
+        partner_group_id: group_id,
+        partner_group: group,
+        contact_id: contact.id,
+        contact: contact,
+        fee_id: fee.id,
+        fee: fee,
+        signing_date: ~D[2021-11-28],
+        start_date: ~D[2022-01-01],
+        termination_date: termination_date,
+        archive_date: nil
+      })
+
+    if :rand.uniform() < membership_ratio do
+      membership =
+        Repo.insert!(%Membership{
+          club_id: club.id,
+          club: club,
+          department_id: department_id,
+          department: department,
+          group_id: group_id,
+          group: group,
+          contact_id: contact.id,
+          contact: contact,
+          contracts: [contract],
+          start_date: contract.start_date,
+          state: membership_state,
+          termination_date: termination_date
+        })
+
+      add_membership_application(membership)
+
+      if membership_state == "terminated" || :rand.uniform() < 0.15 do
+        add_membership_termination_request(membership)
+      end
+
+      {contract, membership}
+    else
+      {contract, nil}
+    end
+  end
+
+  defp add_membership_application(%Membership{} = membership) do
+    state =
+      if membership.state == "pending" do
+        "open"
+      else
+        "accepted"
+      end
+
+    Repo.insert(%Request{
+      club_id: membership.club_id,
+      department_id: membership.department_id,
+      group_id: membership.group_id,
+      author_name: "seed",
+      author_mail: "seed@example.de",
+      opening_date: Date.add(membership.start_date, -16),
+      type: "membership_application",
+      membership_id: membership.id,
+      is_author_confirmed: true,
+      confirmation_date: membership.start_date,
+      state: state,
+      closing_date: membership.termination_date
+    })
+  end
+
+  defp add_membership_termination_request(%Membership{} = membership) do
+    {state, opening_date} =
+      if membership.state != "terminated" do
+        {"open", Date.add(Date.utc_today(), -16)}
+      else
+        {"accepted", Date.add(membership.termination_date, -16)}
+      end
+
+    Repo.insert(%Request{
+      club_id: membership.club_id,
+      department_id: membership.department_id,
+      group_id: membership.group_id,
+      author_name: "seed",
+      author_mail: "seed@example.de",
+      opening_date: opening_date,
+      type: "membership_termination",
+      membership_id: membership.id,
+      is_author_confirmed: true,
+      confirmation_date: Date.add(Date.utc_today(), -16),
+      state: state,
+      closing_date: membership.termination_date
+    })
   end
 end
 
@@ -904,199 +1131,10 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
     end)
 
     # Contacts & Contracts
-    number_of_contracts = Enum.random(20..50)
+    number_of_contacts = Enum.random(20..50)
 
-    for _i <- 0..number_of_contracts do
-      is_main = :rand.uniform() < 0.8
-
-      postal_addresses =
-        cond do
-          :rand.uniform() < 0.85 ->
-            [Map.from_struct(Sportyweb.SeedHelper.get_random_postal_address(is_main))]
-
-          true ->
-            [
-              Map.from_struct(Sportyweb.SeedHelper.get_random_postal_address(is_main)),
-              Map.from_struct(Sportyweb.SeedHelper.get_random_postal_address(false))
-            ]
-        end
-
-      is_main = :rand.uniform() < 0.8
-
-      emails =
-        cond do
-          :rand.uniform() < 0.6 ->
-            [Map.from_struct(Sportyweb.SeedHelper.get_random_email(is_main))]
-
-          true ->
-            [
-              Map.from_struct(Sportyweb.SeedHelper.get_random_email(is_main)),
-              Map.from_struct(Sportyweb.SeedHelper.get_random_email(false))
-            ]
-        end
-
-      is_main = :rand.uniform() < 0.8
-
-      phones =
-        cond do
-          :rand.uniform() < 0.6 ->
-            [Map.from_struct(Sportyweb.SeedHelper.get_random_phone(is_main))]
-
-          true ->
-            [
-              Map.from_struct(Sportyweb.SeedHelper.get_random_phone(is_main)),
-              Map.from_struct(Sportyweb.SeedHelper.get_random_phone(false))
-            ]
-        end
-
-      is_person = :rand.uniform() < 0.8
-
-      # Use the context function instead of Repo.insert!() to invoke the changeset which sets the name.
-      {:ok, %Contact{} = contact} =
-        Personal.create_contact(%{
-          club_id: club.id,
-          type: if(is_person, do: "person", else: "organization"),
-          organization_name:
-            if(is_person,
-              do: "",
-              else:
-                "#{Faker.Company.buzzword_prefix()} #{Faker.Industry.sub_sector()} #{Faker.Company.buzzword_prefix()}"
-            ),
-          organization_type:
-            if(is_person,
-              do: "",
-              else:
-                Contact.get_valid_organization_types()
-                |> Enum.map(fn organization_type -> organization_type[:value] end)
-                |> Enum.random()
-            ),
-          person_last_name: if(is_person, do: Faker.Person.last_name(), else: ""),
-          person_first_name_1: if(is_person, do: Faker.Person.first_name(), else: ""),
-          person_first_name_2:
-            if(is_person && :rand.uniform() > 0.80, do: Faker.Person.first_name(), else: ""),
-          person_gender:
-            if(is_person,
-              do:
-                Contact.get_valid_genders()
-                |> Enum.map(fn gender -> gender[:value] end)
-                |> Enum.random(),
-              else: ""
-            ),
-          person_birthday: if(is_person, do: Faker.Date.date_of_birth(6..99), else: ""),
-          postal_addresses: postal_addresses,
-          emails: emails,
-          phones: phones,
-          financial_data: [Map.from_struct(Sportyweb.SeedHelper.get_random_financial_data(true))],
-          notes: [Map.from_struct(Sportyweb.SeedHelper.get_random_note())]
-        })
-
-      if contact.type == "person" do
-        # create contracts for most persons
-        if :rand.uniform() < 0.9 do
-          fee = Finance.list_contract_fee_options(club, contact.id) |> Enum.random()
-
-          contract =
-            Repo.insert!(%Contract{
-              club_id: club.id,
-              club: club,
-              contact_id: contact.id,
-              fee_id: fee.id,
-              signing_date: ~D[2021-11-28],
-              start_date: ~D[2022-01-01],
-              termination_date: nil,
-              archive_date: nil
-            })
-
-          # make most persons with contracts members
-          # allow contracts between persons and departments or groups only for memberships
-          if :rand.uniform() < 0.85 do
-            Repo.insert!(%Membership{
-              club_id: club.id,
-              contact_id: contact.id,
-              contracts: [contract],
-              start_date: contract.start_date,
-              state:
-                Membership.get_valid_states()
-                |> Enum.map(fn state -> state[:value] end)
-                |> Enum.random(),
-              termination_date:
-                if :rand.uniform() < 0.1 do
-                  Date.add(Date.utc_today(), -14)
-                else
-                  nil
-                end
-            })
-
-            if Enum.any?(club.departments) do
-              department = club.departments |> Enum.random()
-
-              if :rand.uniform() < 0.3 do
-                # Select a random fee that works with this combination of club & department
-                fee = Finance.list_contract_fee_options(department, contact.id) |> Enum.random()
-
-                department_contract =
-                  Repo.insert!(%Contract{
-                    club_id: club.id,
-                    contact_id: contact.id,
-                    fee_id: fee.id,
-                    signing_date: ~D[2021-11-28],
-                    start_date: ~D[2022-01-01],
-                    termination_date: nil,
-                    archive_date: nil,
-                    partner_department: department,
-                    partner_department_id: department.id
-                  })
-
-                Repo.insert!(%Membership{
-                  club_id: club.id,
-                  contact_id: contact.id,
-                  department_id: department.id,
-                  contracts: [department_contract],
-                  start_date: department_contract.start_date,
-                  state:
-                    Membership.get_valid_states()
-                    |> Enum.map(fn state -> state[:value] end)
-                    |> Enum.random()
-                })
-
-                if Enum.any?(department.groups) do
-                  group = department.groups |> Enum.random()
-
-                  if :rand.uniform() < 0.3 do
-                    # Select a random fee that works with this combination of club & group
-                    fee = Finance.list_contract_fee_options(group, contact.id) |> Enum.random()
-
-                    group_contract =
-                      Repo.insert!(%Contract{
-                        club_id: club.id,
-                        contact_id: contact.id,
-                        fee_id: fee.id,
-                        signing_date: ~D[2021-11-28],
-                        start_date: ~D[2022-01-01],
-                        termination_date: nil,
-                        archive_date: nil,
-                        partner_group: group,
-                        partner_group_id: group.id
-                      })
-
-                    Repo.insert!(%Membership{
-                      club_id: club.id,
-                      contact_id: contact.id,
-                      group_id: group.id,
-                      contracts: [group_contract],
-                      start_date: group_contract.start_date,
-                      state:
-                        Membership.get_valid_states()
-                        |> Enum.map(fn state -> state[:value] end)
-                        |> Enum.random()
-                    })
-                  end
-                end
-              end
-            end
-          end
-        end
-      end
+    for _i <- 0..number_of_contacts do
+      Sportyweb.ContactSeedHelper.add_contact(club)
     end
 
     # Locations
