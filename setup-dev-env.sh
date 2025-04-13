@@ -25,7 +25,6 @@ mix deps.get
 mix assets.setup
 mix assets.build
 
-
 echo "- Drop databases (Dev & Test)"
 MIX_ENV=dev  mix ecto.drop
 MIX_ENV=test mix ecto.drop
